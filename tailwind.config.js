@@ -8,6 +8,24 @@ module.exports = {
   darkMode: "class", // 다크모드 활성화 (class 방식)
   theme: {
     extend: {
+      // 커스텀 폰트 크기 (관리자 대시보드용)
+      fontSize: {
+        xs: ["12px", "16px"],
+        sm: ["14px", "20px"],
+        base: ["16px", "24px"],
+        lg: ["18px", "28px"],
+        xl: ["20px", "28px"],
+        "2xl": ["24px", "32px"],
+        "3xl": ["30px", "36px"],
+        "4xl": ["36px", "40px"],
+
+        // 관리자 대시보드 전용 크기
+        "dashboard-title": ["28px", "36px"],
+        "dashboard-subtitle": ["20px", "28px"],
+        "dashboard-body": ["16px", "24px"],
+        "dashboard-caption": ["14px", "20px"],
+      },
+
       colors: {
         // 메인 브랜드 컬러 (파란색 계열)
         primary: {
