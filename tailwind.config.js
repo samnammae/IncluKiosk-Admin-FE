@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    ".src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    ".src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    ".src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "class", // 다크모드 활성화 (class 방식)
   theme: {
@@ -21,6 +21,20 @@ module.exports = {
       },
 
       colors: {
+        background: "rgb(var(--background))",
+        foreground: "rgb(var(--foreground))",
+        card: "rgb(var(--card))",
+        "card-foreground": "rgb(var(--card-foreground))",
+        primary: "rgb(var(--primary))",
+        "primary-foreground": "rgb(var(--primary-foreground))",
+        secondary: "rgb(var(--secondary))",
+        "secondary-foreground": "rgb(var(--secondary-foreground))",
+        muted: "rgb(var(--muted))",
+        "muted-foreground": "rgb(var(--muted-foreground))",
+        border: "rgb(var(--border))",
+        input: "rgb(var(--input))",
+        ring: "rgb(var(--ring))",
+
         // 메인 브랜드 컬러 (파란색 계열)
         primary: {
           50: "#eff6ff",
