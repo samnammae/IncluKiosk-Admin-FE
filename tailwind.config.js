@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    ".src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    ".src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    ".src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "class", // 다크모드 활성화 (class 방식)
   theme: {
@@ -18,12 +18,6 @@ module.exports = {
         "2xl": ["24px", "32px"],
         "3xl": ["30px", "36px"],
         "4xl": ["36px", "40px"],
-
-        // 관리자 대시보드 전용 크기
-        "dashboard-title": ["28px", "36px"],
-        "dashboard-subtitle": ["20px", "28px"],
-        "dashboard-body": ["16px", "24px"],
-        "dashboard-caption": ["14px", "20px"],
       },
 
       colors: {
