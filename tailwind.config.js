@@ -36,18 +36,13 @@ module.exports = {
         ring: "rgb(var(--ring))",
 
         // 메인 브랜드 컬러 (파란색 계열)
-        primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6", // 기본 파란색
-          600: "#2563eb", // 조금 진한 파란색
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+        brand: {
+          main: "#4c63d2",
+          dark: "#3949ab",
+          accent: "#1976d2",
+          light: "#e3f2fd",
         },
+
         // 중성 컬러 (그레이 계열)
         neutral: {
           50: "#f8fafc",
