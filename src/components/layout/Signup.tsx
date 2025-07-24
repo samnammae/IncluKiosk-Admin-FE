@@ -1,4 +1,5 @@
 "use client";
+import { authAPI } from "@/lib/api/auth";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState, FormEvent } from "react";
 
@@ -25,7 +26,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 폼 제출
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -52,8 +53,7 @@ const Signup = () => {
 
     if (isAllValid) {
       console.log("Registration form submitted:", joinForm);
-      // API 호출 로직 여기에 추가
-      // await authAPI.join(joinForm)
+      await authAPI.signup(joinForm);
       changeMode(); // 성공시 로그인 모드로 변경
     }
 

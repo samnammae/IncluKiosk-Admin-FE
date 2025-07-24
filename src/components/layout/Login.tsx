@@ -1,4 +1,5 @@
 "use client";
+import { authAPI } from "@/lib/api/auth";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState } from "react";
 
@@ -28,8 +29,7 @@ const Login = () => {
 
     try {
       console.log("Login form submitted:", loginForm);
-      // API 호출 로직 여기에 추가
-      // await authAPI.login(loginForm)
+      await authAPI.login(loginForm);
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
