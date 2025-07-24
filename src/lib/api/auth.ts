@@ -4,11 +4,13 @@ export const authAPI = {
   login: async (data: LoginRequest) => {
     const response = await api.post("/auth/login", data);
     localStorage.setItem("accessToken", response.data.data.accessToken);
+    console.log(response.data);
     return response.data;
   },
 
   signup: async (data: SignupRequest) => {
     const response = await api.post("/auth/signup", data);
+    console.log(response.data);
     return response.data;
   },
 
