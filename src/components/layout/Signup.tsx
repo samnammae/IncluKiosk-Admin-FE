@@ -2,6 +2,7 @@
 import { authAPI } from "@/lib/api/auth";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState, FormEvent } from "react";
+import BackIcon from "../ui/icon/BackIcon";
 
 const Signup = () => {
   const { changeMode } = useLoginModalStore();
@@ -187,13 +188,13 @@ const Signup = () => {
     <div className="p-8 w-full relative">
       {/* 뒤로가기 버튼 */}
       <div className="flex flex-col mb-4">
-        <button
+        <div
           onClick={changeMode}
-          className="flex items-center bg-none border-none cursor-pointer text-gray-600 text-sm p-2 transition-colors duration-200 hover:text-blue-600 self-start"
+          className="flex items-center bg-none border-none cursor-pointer text-gray-600 text-sm p-1 transition-colors duration-200 hover:text-blue-600 self-start"
         >
-          <span className="mr-1">←</span>
+          <BackIcon size={20} onClick={() => {}} />
           <span className="font-medium">로그인으로 돌아가기</span>
-        </button>
+        </div>
       </div>
 
       <div className="w-full">
