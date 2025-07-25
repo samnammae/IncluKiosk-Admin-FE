@@ -2,17 +2,21 @@
 
 import Link from "next/link";
 import { useLoginModalStore } from "@/lib/store/loginStore";
+import { authAPI } from "@/lib/api/auth";
 
 export default function Header() {
-  const { isLoginModalOpen, openLoginModal } = useLoginModalStore();
+  const { isLoggedIn, setIsLoggedIn, openLoginModal } = useLoginModalStore();
   const handleLoginClick = () => {
-    console.log("로그인 버튼 클릭됨");
-    console.log("클릭 전 모달 상태:", isLoginModalOpen);
     openLoginModal();
-    console.log(
-      "클릭 후 모달 상태:",
-      useLoginModalStore.getState().isLoginModalOpen
-    );
+  };
+  const handleLogoutClick = async () => {
+    try {
+      await authAPI.logout();
+      setIsLoggedIn();
+      alert("로그아웃 성공");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
   return (
     <>
@@ -22,9 +26,15 @@ export default function Header() {
           <Link href={"/dashboard"}>
             <div className="">대시보드</div>
           </Link>
-          <div className="" onClick={handleLoginClick}>
-            로그인
-          </div>
+          {isLoggedIn ? (
+            <div className="" onClick={handleLogoutClick}>
+              로그아웃
+            </div>
+          ) : (
+            <div className="" onClick={handleLoginClick}>
+              로그인
+            </div>
+          )}
         </div>
       </header>
     </>

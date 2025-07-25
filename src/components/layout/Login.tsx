@@ -4,7 +4,7 @@ import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState } from "react";
 
 const Login = () => {
-  const { changeMode, closeLoginModal } = useLoginModalStore();
+  const { setIsLoggedIn, changeMode, closeLoginModal } = useLoginModalStore();
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -30,6 +30,7 @@ const Login = () => {
     try {
       console.log("Login form submitted:", loginForm);
       await authAPI.login(loginForm);
+      setIsLoggedIn();
       closeLoginModal();
     } catch (error) {
       console.error("Login failed:", error);

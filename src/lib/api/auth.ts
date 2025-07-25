@@ -14,10 +14,10 @@ export const authAPI = {
     return response.data;
   },
 
-  logout: async (): Promise<void> => {
+  logout: async () => {
     await api.post("/auth/logout");
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
+      localStorage.removeItem("accessToken");
     }
   },
 };
