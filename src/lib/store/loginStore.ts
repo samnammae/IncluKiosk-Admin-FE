@@ -14,7 +14,7 @@ interface ModalState {
 export const useLoginModalStore = create<ModalState>((set) => ({
   isLoginModalOpen: false,
   isSignupMode: false,
-  isLoggedIn: true,
+  isLoggedIn: false,
 
   setIsLoggedIn: () => set((state) => ({ isLoggedIn: !state.isLoggedIn })),
   changeMode: () => set((state) => ({ isSignupMode: !state.isSignupMode })),
