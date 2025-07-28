@@ -17,7 +17,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-60 bg-gradient-to-b from-brand-main to-brand-dark text-white min-h-screen relative">
+    <div className="fixed top-0 left-0 w-60 bg-gradient-to-b from-brand-main to-brand-dark text-white h-screen z-10">
       {/* 로고 */}
       <div className="p-5 pb-8 border-b border-white/10 mb-5">
         <h1 className="text-xl font-bold">키오스크 관리자</h1>

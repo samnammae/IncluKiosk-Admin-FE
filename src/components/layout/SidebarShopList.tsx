@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { shopAPI } from "@/lib/api/shop";
 import { useShopStore } from "@/lib/store/shopStore";
+import { useRouter } from "next/navigation";
 
 const SidebarShopList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Zustand store 사용
+  const router = useRouter();
   const { shops, chooseShop, setShops, setChooseShop } = useShopStore();
 
   // API 호출 함수
@@ -17,12 +17,11 @@ const SidebarShopList = () => {
     try {
       const response = await shopAPI.getAllShop();
       if (response.success) {
-        setShops(response.data.stores, response.data.totalCount);
+        setShops(response.data, response.data.length);
+
         // 첫 번째 매장을 기본 선택
-        if (response.data.stores) {
-          if (response.data.stores.length > 0 && !chooseShop) {
-            setChooseShop(response.data.stores[0]);
-          }
+        if (response.data && response.data.length > 0 && !chooseShop) {
+          setChooseShop(response.data[0]); // response.data.stores[0] → response.data[0]
         }
       }
     } catch (error) {
@@ -77,7 +76,7 @@ const SidebarShopList = () => {
             transition-all duration-300 ease-in-out
             ${
               isOpen
-                ? "opacity-100 translate-y-1 max-h-80"
+                ? "opacity-100 translate-y-1 max-h-80 overflow-y-scroll"
                 : "opacity-0 translate-y-0 max-h-0"
             }
           `}
@@ -115,8 +114,7 @@ const SidebarShopList = () => {
             <button
               onClick={() => {
                 setIsOpen(false);
-                // 여기에 새 매장 추가 로직
-                console.log("새 매장 추가");
+                router.push("/dashboard/shop/add");
               }}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 text-brand-main text-sm font-medium flex items-center gap-3"
             >
