@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import SidebarShopList from "./SidebarShopList";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -15,23 +17,39 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-60 bg-blue-900 min-h-screen">
-      <div className="p-6 ">
-        <h1 className="text-xl font-bold text-white">키오스크 관리자</h1>
+    <div className="fixed top-0 left-0 w-60 bg-gradient-to-b from-brand-main to-brand-dark text-white h-screen z-10">
+      {/* 로고 */}
+      <div className="p-5 pb-8 border-b border-white/10 mb-5">
+        <h1 className="text-xl font-bold">키오스크 관리자</h1>
       </div>
 
-      <nav className="mt-8 px-3 flex flex-col gap-2">
-        {menuItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`block px-6 py-4 text-white hover:bg-blue-800 transition-colors rounded-lg ${
-              pathname === item.href ? "bg-blue-800 " : ""
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
+      <SidebarShopList />
+
+      {/* 네비게이션 메뉴 */}
+      <nav className="px-5">
+        <ul className="space-y-1">
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`
+                    block px-5 py-4 text-sm rounded-lg transition-all duration-200
+                    border-l-3 relative
+                    ${
+                      isActive
+                        ? "bg-white/10 text-white border-l-white"
+                        : "text-white/80 border-l-transparent hover:bg-white/5 hover:text-white hover:border-l-white"
+                    }
+                  `}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </nav>
     </div>
   );

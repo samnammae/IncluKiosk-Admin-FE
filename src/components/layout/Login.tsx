@@ -4,7 +4,7 @@ import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState } from "react";
 
 const Login = () => {
-  const { changeMode } = useLoginModalStore();
+  const { setIsLoggedIn, changeMode, closeLoginModal } = useLoginModalStore();
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -30,6 +30,8 @@ const Login = () => {
     try {
       console.log("Login form submitted:", loginForm);
       await authAPI.login(loginForm);
+      setIsLoggedIn();
+      closeLoginModal();
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
@@ -81,7 +83,7 @@ const Login = () => {
             value={loginForm.password}
             onChange={handleChange}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if ((e.key = "eneter")) handleSubmit(e);
+              if (e.key === "Enter") handleSubmit(e);
             }}
             className="w-full p-3 border-2 border-gray-200 rounded-md text-sm transition-all duration-200 bg-white focus:border-blue-600 focus:outline-none focus:shadow-[0_0_0_3px_rgba(30,64,175,0.1)] placeholder:text-gray-400"
             required
