@@ -1,8 +1,8 @@
 "use client";
 import { useLoginModalStore } from "@/lib/store/loginStore";
-import Login from "./Login";
-import Signup from "./Signup";
-import ClosedIcon from "../ui/icon/ClosedIcon";
+import Login from ".././Login";
+import Signup from ".././Signup";
+import ClosedIcon from "../../ui/icon/ClosedIcon";
 
 const LoginModal = () => {
   const { isLoginModalOpen, isSignupMode, closeLoginModal, changeMode } =
@@ -23,9 +23,6 @@ const LoginModal = () => {
       onClick={handleBackgroundClick}
     >
       <div className="p-5 relative max-w-lg w-full max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
-        {/* <button className=" bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-gray-800 transition-all duration-200">
-          ✕
-        </button> */}
         <div className="absolute top-4 right-6 z-10 w-8 h-8">
           <ClosedIcon onClick={closeLoginModal} />
         </div>
