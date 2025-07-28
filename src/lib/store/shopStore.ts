@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface ShopType {
-  storeId: string | number;
+  storeId: number;
   name: string;
   phone: string;
   address: string;
