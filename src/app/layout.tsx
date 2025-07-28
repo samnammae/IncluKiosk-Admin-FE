@@ -1,5 +1,5 @@
 import "./globals.css";
-import LoginModal from "@/components/layout/LoginModal";
+import LoginModal from "@/components/layout/modal/LoginModal";
 
 export default function RootLayout({
   children,
