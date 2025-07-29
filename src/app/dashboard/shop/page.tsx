@@ -1,5 +1,5 @@
 "use client";
-import TitleHeader from "@/components/layout/TitleHeader";
+import TitleHeader from "@/components/ui/title/TitleHeader";
 import SearchBar from "@/components/ui/card/SearchBar";
 import ShopCard from "@/components/ui/card/ShopCard";
 import ShopListItem from "@/components/ui/card/ShopListItem";
