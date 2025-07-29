@@ -9,7 +9,7 @@ const SidebarShopList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { shops, chooseShop, setShops, setChooseShop } = useShopStore();
+  const { shops, choosedShop, setShops, setChooseShop } = useShopStore();
 
   // API 호출 함수
   const getAllShops = async () => {
@@ -20,7 +20,7 @@ const SidebarShopList = () => {
         setShops(response.data, response.data.length);
 
         // 첫 번째 매장을 기본 선택
-        if (response.data && response.data.length > 0 && !chooseShop) {
+        if (response.data && response.data.length > 0 && !choosedShop) {
           setChooseShop(response.data[0]); // response.data.stores[0] → response.data[0]
         }
       }
@@ -48,7 +48,7 @@ const SidebarShopList = () => {
           className="bg-white/10 border border-white/20 rounded-lg p-3 cursor-pointer hover:bg-white/15 transition-all duration-200"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {chooseShop?.name && (
+          {choosedShop?.name && (
             <div className="text-xs text-white/70 mb-1 uppercase tracking-wider">
               현재 매장
             </div>
@@ -57,7 +57,7 @@ const SidebarShopList = () => {
             <span>
               {isLoading
                 ? "로딩 중..."
-                : chooseShop?.name || "매장을 선택하세요"}
+                : choosedShop?.name || "매장을 선택하세요"}
             </span>
             <span
               className={`text-xs transition-transform duration-200 ${
@@ -91,7 +91,7 @@ const SidebarShopList = () => {
                   w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150
                   flex items-center justify-between text-gray-700 text-sm
                   ${
-                    chooseShop?.storeId === shop.storeId
+                    choosedShop?.storeId === shop.storeId
                       ? "bg-blue-50 text-brand-main font-medium"
                       : ""
                   }
@@ -101,7 +101,7 @@ const SidebarShopList = () => {
                   <div className={"w-2 h-2 rounded-full"} />
                   {shop.name}
                 </span>
-                {chooseShop?.storeId === shop.storeId && (
+                {choosedShop?.storeId === shop.storeId && (
                   <span className="text-brand-main">✓</span>
                 )}
               </button>

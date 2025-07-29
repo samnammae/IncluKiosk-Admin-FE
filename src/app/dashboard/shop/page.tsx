@@ -1,4 +1,5 @@
 "use client";
+import TitleHeader from "@/components/ui/title/TitleHeader";
 import SearchBar from "@/components/ui/card/SearchBar";
 import ShopCard from "@/components/ui/card/ShopCard";
 import ShopListItem from "@/components/ui/card/ShopListItem";
@@ -7,6 +8,8 @@ import ViewMode from "@/components/ui/card/ViewMode";
 import { shopAPI } from "@/lib/api/shop";
 import { useShopStore } from "@/lib/store/shopStore";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import AcceptButton from "@/components/ui/button/AcceptButton";
 
 export default function ShopPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,14 +49,10 @@ export default function ShopPage() {
   return (
     <div className="max-w-8xl mx-auto p-2">
       {/* 헤더 */}
-      <div className="mb-8">
-        <div className="flex gap-1 items-center mb-2">
-          <h1 className="text-3xl font-semibold text-gray-800">매장 관리</h1>
-        </div>
-        <p className="text-gray-600 text-base">
-          키오스크에서 사용할 매장 정보를 관리할 수 있어요
-        </p>
-      </div>
+      <TitleHeader
+        title={"매장 관리"}
+        subText={"키오스크에서 사용할 매장 정보를 관리할 수 있어요"}
+      />
 
       {/* 검색 및 필터 바*/}
       <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
@@ -114,6 +113,13 @@ export default function ShopPage() {
                   ? "다른 검색어를 시도해보세요"
                   : "새로운 매장을 등록해보세요"}
               </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                <Link href="/dashboard/shop/add">
+                  <AcceptButton className="px-4 py-2 text-sm">
+                    매장 추가로 이동
+                  </AcceptButton>
+                </Link>
+              </div>
             </div>
           ) : viewMode === "card" ? (
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

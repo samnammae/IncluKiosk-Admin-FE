@@ -23,9 +23,9 @@ const LoginModal = () => {
       onClick={handleBackgroundClick}
     >
       <div className="p-5 relative max-w-lg w-full max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
-        <div className="absolute top-4 right-6 z-10 w-8 h-8">
+        <button className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center">
           <ClosedIcon onClick={closeLoginModal} />
-        </div>
+        </button>
 
         {isSignupMode ? <Signup /> : <Login />}
       </div>
