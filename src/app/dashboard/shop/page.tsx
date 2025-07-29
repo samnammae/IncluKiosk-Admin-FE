@@ -1,4 +1,5 @@
 "use client";
+import TitleHeader from "@/components/layout/TitleHeader";
 import SearchBar from "@/components/ui/card/SearchBar";
 import ShopCard from "@/components/ui/card/ShopCard";
 import ShopListItem from "@/components/ui/card/ShopListItem";
@@ -46,13 +47,15 @@ export default function ShopPage() {
   return (
     <div className="max-w-8xl mx-auto p-2">
       {/* 헤더 */}
+      <TitleHeader
+        title={"매장 관리"}
+        subText={"키오스크에서 사용할 매장 정보를 관리할 수 있어요"}
+      />
       <div className="mb-8">
         <div className="flex gap-1 items-center mb-2">
-          <h1 className="text-3xl font-semibold text-gray-800">매장 관리</h1>
+          <h1 className="text-3xl font-semibold text-gray-800"></h1>
         </div>
-        <p className="text-gray-600 text-base">
-          키오스크에서 사용할 매장 정보를 관리할 수 있어요
-        </p>
+        <p className="text-gray-600 text-base"></p>
       </div>
 
       {/* 검색 및 필터 바*/}
