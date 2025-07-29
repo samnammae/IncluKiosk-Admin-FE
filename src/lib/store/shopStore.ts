@@ -13,7 +13,7 @@ interface ShopType {
 interface ShopStore {
   totalCount: number;
   shops: ShopType[];
-  chooseShop: ShopType | null;
+  choosedShop: ShopType | null;
   setShops: (shops: ShopType[], totalCount: number) => void;
   setChooseShop: (shop: ShopType | null) => void;
 }
@@ -21,10 +21,10 @@ interface ShopStore {
 export const useShopStore = create<ShopStore>((set) => ({
   totalCount: 0,
   shops: [] as ShopType[],
-  chooseShop: null as ShopType | null,
+  choosedShop: null as ShopType | null,
 
   setShops: (shops: ShopType[], totalCount: number) =>
     set({ shops, totalCount }),
 
-  setChooseShop: (shop: ShopType | null) => set({ chooseShop: shop }),
+  setChooseShop: (shop: ShopType | null) => set({ choosedShop: shop }),
 }));
