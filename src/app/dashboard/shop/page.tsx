@@ -8,6 +8,8 @@ import ViewMode from "@/components/ui/card/ViewMode";
 import { shopAPI } from "@/lib/api/shop";
 import { useShopStore } from "@/lib/store/shopStore";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import AcceptButton from "@/components/ui/button/AcceptButton";
 
 export default function ShopPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -111,6 +113,13 @@ export default function ShopPage() {
                   ? "다른 검색어를 시도해보세요"
                   : "새로운 매장을 등록해보세요"}
               </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                <Link href="/dashboard/shop/add">
+                  <AcceptButton className="px-4 py-2 text-sm">
+                    매장 추가로 이동
+                  </AcceptButton>
+                </Link>
+              </div>
             </div>
           ) : viewMode === "card" ? (
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
