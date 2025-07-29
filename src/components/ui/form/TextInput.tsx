@@ -1,10 +1,10 @@
 interface TextInputProps {
   id: string;
-  value: string;
+  value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  type?: "text" | "email" | "tel" | "password";
+  type?: "text" | "email" | "tel" | "password" | "number";
   required?: boolean;
   hasError?: boolean;
   className?: string;
