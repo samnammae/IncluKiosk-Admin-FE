@@ -51,12 +51,6 @@ export default function ShopPage() {
         title={"매장 관리"}
         subText={"키오스크에서 사용할 매장 정보를 관리할 수 있어요"}
       />
-      <div className="mb-8">
-        <div className="flex gap-1 items-center mb-2">
-          <h1 className="text-3xl font-semibold text-gray-800"></h1>
-        </div>
-        <p className="text-gray-600 text-base"></p>
-      </div>
 
       {/* 검색 및 필터 바*/}
       <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
