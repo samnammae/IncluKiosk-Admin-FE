@@ -2,6 +2,7 @@ import React from "react";
 import SearchIcon from "../icon/SearchIcon";
 interface SearchBarProps {
   searchQuery: string;
+  placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   count: number;
 }
@@ -9,6 +10,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
   onChange,
   count,
+  placeholder,
 }) => {
   return (
     <>
@@ -19,7 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         </div>
         <input
           type="text"
-          placeholder="매장명, 주소, 전화번호로 검색..."
+          placeholder={placeholder || ""}
           value={searchQuery}
           onChange={onChange}
           className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

@@ -64,6 +64,7 @@ export default function ShopPage() {
                 setSearchQuery(e.target.value)
               }
               count={filteredShops.length}
+              placeholder="매장명, 주소, 전화번호로 검색..."
             />
           </div>
           <ViewMode
