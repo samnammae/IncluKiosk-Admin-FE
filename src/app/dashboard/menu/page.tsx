@@ -1,4 +1,5 @@
 import CategoryManage from "@/components/layout/menu/CategoryManage";
+import MenuManage from "@/components/layout/menu/MenuManage";
 import TitleHeader from "@/components/ui/title/TitleHeader";
 
 export default function MenuPage() {
@@ -9,6 +10,7 @@ export default function MenuPage() {
         subText={"카테고리와 메뉴 그리고 옵션을 쉽게 추가하고 편집해보세요"}
       />
       <CategoryManage />
+      <MenuManage />
     </div>
   );
 }
