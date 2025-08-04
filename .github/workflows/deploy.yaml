@@ -30,7 +30,7 @@ jobs:
           npm ci
           npm run build
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
 
       # EC2에 배포
       - name: Deploy to EC2
@@ -40,11 +40,11 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/inclukiosk_admin
+            cd /home/ubuntu/IncluKiosk-Admin-FE
             git pull origin main
 
             # 환경변수 파일 생성
-            echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.production
+            echo "NEXT_PUBLIC_SERVER_URL=${{ secrets.NEXT_PUBLIC_SERVER_URL }}" > .env.production
 
             npm ci
             npm run build
