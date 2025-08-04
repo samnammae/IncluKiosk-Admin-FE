@@ -35,11 +35,6 @@ const CategoryContainer = () => {
     e.currentTarget.classList.add("border-blue-400", "bg-blue-50");
   };
 
-  // 드래그 나갈 때
-  const dragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.currentTarget.classList.remove("border-blue-400", "bg-blue-50");
-  };
-
   // 드랍
   const drop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -70,29 +65,29 @@ const CategoryContainer = () => {
     setCategories(updatedCategories);
   };
 
-  // 카테고리 편집
-  const handleEdit = (id: string, currentName: string) => {
-    const newName = prompt("카테고리 이름을 수정하세요:", currentName);
-    if (newName && newName.trim() && newName.trim() !== currentName) {
-      setCategories(
-        categories.map((cat) =>
-          cat.id === id ? { ...cat, name: newName.trim() } : cat
-        )
-      );
-    }
-  };
+  // // 카테고리 편집
+  // const handleEdit = (id: string, currentName: string) => {
+  //   const newName = prompt("카테고리 이름을 수정하세요:", currentName);
+  //   if (newName && newName.trim() && newName.trim() !== currentName) {
+  //     setCategories(
+  //       categories.map((cat) =>
+  //         cat.id === id ? { ...cat, name: newName.trim() } : cat
+  //       )
+  //     );
+  //   }
+  // };
 
-  // 카테고리 삭제
-  const handleDelete = (id: string) => {
-    if (confirm("이 카테고리를 삭제하시겠습니까?")) {
-      const filtered = categories.filter((cat) => cat.id !== id);
-      const reordered = filtered.map((cat, index) => ({
-        ...cat,
-        displayOrder: index + 1,
-      }));
-      setCategories(reordered);
-    }
-  };
+  // // 카테고리 삭제
+  // const handleDelete = (id: string) => {
+  //   if (confirm("이 카테고리를 삭제하시겠습니까?")) {
+  //     const filtered = categories.filter((cat) => cat.id !== id);
+  //     const reordered = filtered.map((cat, index) => ({
+  //       ...cat,
+  //       displayOrder: index + 1,
+  //     }));
+  //     setCategories(reordered);
+  //   }
+  // };
 
   return (
     <div className="flex flex-wrap gap-3">

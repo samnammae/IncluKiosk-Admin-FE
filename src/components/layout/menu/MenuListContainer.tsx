@@ -176,9 +176,9 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
     console.log("Delete menu:", id);
   };
 
-  const handleToggleSoldOut = (id: string) => {
-    console.log("Toggle sold out:", id);
-  };
+  // const handleToggleSoldOut = (id: string) => {
+  //   console.log("Toggle sold out:", id);
+  // };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ko-KR").format(price);
