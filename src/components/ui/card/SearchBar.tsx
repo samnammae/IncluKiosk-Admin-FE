@@ -31,8 +31,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
       {searchQuery && (
         <div className="pt-4">
           <p className="text-sm text-gray-600">
-            <span className="font-medium">"{searchQuery}"</span>에 대한 검색
-            결과:
+            <span className="font-medium">&quot;{searchQuery}&quot;</span>에
+            대한 검색 결과:
             <span className="font-medium text-blue-600 ml-1">{count}개</span>
           </p>
         </div>
