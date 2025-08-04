@@ -14,10 +14,11 @@ import { shopAPI } from "@/lib/api/shop";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, ChangeEvent } from "react";
 import DeleteButton from "../ui/button/DeleteButton";
+import { ShopDataType } from "@/app/dashboard/shop/[id]/page";
 
 interface ShopFormProps {
   mode: "create" | "edit";
-  initialData?: any;
+  initialData?: ShopDataType | null;
   onDeleteClick?: () => void;
 }
 export default function ShopForm({
@@ -63,12 +64,13 @@ export default function ShopForm({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    console.log("initialDatainitialDatainitialDatainitialData", initialData);
     if (initialData) {
       setFormDataFromShop(initialData);
     }
   }, [initialData]);
 
-  const setFormDataFromShop = (data: any) => {
+  const setFormDataFromShop = (data: ShopDataType) => {
     setShopForm({
       name: data.name || "",
       phone: data.phone || "",

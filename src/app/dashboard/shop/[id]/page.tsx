@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 interface Props {
   params: Promise<{ id: string }>;
 }
-interface ShopDataType {
+export interface ShopDataType {
   storeId: string;
   name: string;
   phone: string;

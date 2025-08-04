@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Table,
@@ -138,18 +138,15 @@ interface MenuListContainerProps {
 }
 
 const MenuListContainer = ({ data }: MenuListContainerProps) => {
-  if (data.length === 0) {
-    return <EmptyMenu />;
-  }
   // 받은 데이터를 그대로 사용
-  const menuItems: MenuItem[] = React.useMemo(() => {
+  const menuItems: MenuItem[] = useMemo(() => {
     return data;
   }, [data]);
 
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof MenuItem>("name");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState<keyof MenuItem>("name");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -179,15 +176,15 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
     console.log("Delete menu:", id);
   };
 
-  const handleToggleSoldOut = (id: string) => {
-    console.log("Toggle sold out:", id);
-  };
+  // const handleToggleSoldOut = (id: string) => {
+  //   console.log("Toggle sold out:", id);
+  // };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ko-KR").format(price);
   };
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       [...menuItems]
         .sort(getComparator(order, orderBy))
@@ -197,6 +194,9 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
   const emptyRows =
     visibleRows.length < rowsPerPage ? rowsPerPage - visibleRows.length : 0;
 
+  if (data.length === 0) {
+    return <EmptyMenu />;
+  }
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>

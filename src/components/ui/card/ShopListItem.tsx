@@ -1,13 +1,7 @@
-interface Shop {
-  storeId: number;
-  name: string;
-  phone: string;
-  address: string;
-  mainImg: string;
-}
+import { ShopType } from "@/lib/store/shopStore";
 
 interface ShopListItemProps {
-  shop: Shop;
+  shop: ShopType;
 }
 
 const ShopListItem: React.FC<ShopListItemProps> = ({ shop }) => (

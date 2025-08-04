@@ -2,7 +2,7 @@
 
 import { SectionTitle } from "@/components/ui/title/SectionTitle";
 import { useShopStore } from "@/lib/store/shopStore";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState } from "react";
 import NoShopGuide from "../NoShopGuide";
 import CategoryAdd from "./CategoryAdd";
 import CategoryContainer from "./CategoryContainer";

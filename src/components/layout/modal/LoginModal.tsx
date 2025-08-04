@@ -5,7 +5,7 @@ import Signup from ".././Signup";
 import ClosedIcon from "../../ui/icon/ClosedIcon";
 
 const LoginModal = () => {
-  const { isLoginModalOpen, isSignupMode, closeLoginModal, changeMode } =
+  const { isLoginModalOpen, isSignupMode, closeLoginModal } =
     useLoginModalStore();
 
   if (!isLoginModalOpen) return null;

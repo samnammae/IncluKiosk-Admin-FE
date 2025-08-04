@@ -1,7 +1,7 @@
 "use client";
 import { authAPI } from "@/lib/api/auth";
 import { useLoginModalStore } from "@/lib/store/loginStore";
-import { ChangeEvent, useState, FormEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import BackIcon from "../ui/icon/BackIcon";
 
 const Signup = () => {

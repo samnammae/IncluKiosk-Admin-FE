@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { shopAPI } from "@/lib/api/shop";
-import { useShopStore } from "@/lib/store/shopStore";
+import { ShopType, useShopStore } from "@/lib/store/shopStore";
 import { useRouter } from "next/navigation";
 
 const SidebarShopList = () => {
@@ -35,7 +35,7 @@ const SidebarShopList = () => {
     getAllShops();
   }, []);
 
-  const handleShopSelect = (shop: any) => {
+  const handleShopSelect = (shop: ShopType) => {
     setChooseShop(shop);
     setIsOpen(false);
   };

@@ -90,7 +90,9 @@ const ConfirmModal = ({
           {/* 설명 */}
           <p className="text-gray-600 text-center mb-6 leading-relaxed">
             정말로{" "}
-            <span className="font-semibold text-gray-900">"{targetName}"</span>{" "}
+            <span className="font-semibold text-gray-900">
+              &quot;{targetName}&quot;
+            </span>{" "}
             {purpose}을 삭제하시겠습니까?
             <br />
             <span className="text-sm text-red-600 mt-1 block">

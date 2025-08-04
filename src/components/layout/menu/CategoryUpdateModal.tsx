@@ -16,7 +16,7 @@ const CategoryUpdateModal: React.FC<CategoryUpdateModal> = ({
   choosedCategory,
 }) => {
   const [inputValue, setInputValue] = useState(choosedCategory?.name || "");
-  const [showError, setShowError] = useState(false);
+  const [showError, _setShowError] = useState(false);
   if (!isOpen) return null;
 
   const handleClose = () => {

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface ShopType {
+export interface ShopType {
   storeId: number;
   name: string;
   phone: string;
