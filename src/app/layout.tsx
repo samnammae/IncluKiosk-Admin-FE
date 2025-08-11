@@ -1,5 +1,4 @@
 import "./globals.css";
-import LoginModal from "@/components/layout/modal/LoginModal";
 import Providers from "./providers";
 
 export default function RootLayout({
@@ -11,7 +10,6 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <Providers>{children}</Providers>
-        <LoginModal />
       </body>
     </html>
   );
