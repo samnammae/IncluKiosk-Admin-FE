@@ -14,14 +14,16 @@ export default function Header() {
   const handleLogoutClick = async () => {
     try {
       await authAPI.logout();
-      setIsLoggedIn();
+      setIsLoggedIn(false);
       alert("로그아웃 성공");
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
   useEffect(() => {
-    console.log(isLoggedIn);
+    if (window.localStorage.getItem("accessToken")) setIsLoggedIn(true);
+    else setIsLoggedIn(false);
+    console.log("isLoggedInisLoggedInisLoggedIn", isLoggedIn);
   }, []);
   return (
     <>
