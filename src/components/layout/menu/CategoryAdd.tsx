@@ -5,15 +5,22 @@ import { ErrorMessage } from "@/components/ui/form/ErrorMessage";
 import { TextInput } from "@/components/ui/form/TextInput";
 import { categoryAPI } from "@/lib/api/category";
 import { useShopStore } from "@/lib/store/shopStore";
+import { useMenuStore } from "@/lib/store/MenuStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface CategoryAddProps {
   setIsOpenAdd: (value: boolean) => void;
 }
 const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
-  const [addCategory, setAddCategory] = useState({ name: "", displayOrder: 0 });
+  const { lastDisplayOrder } = useMenuStore();
+  const [addCategory, setAddCategory] = useState({
+    name: "",
+    displayOrder: lastDisplayOrder,
+  });
   const [addErrorText, setAddErrorText] = useState(false);
   const { choosedShop } = useShopStore();
 
+  const queryClient = useQueryClient();
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -26,24 +33,26 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
       [id]: id === "displayOrder" ? Number(value) : value,
     });
   };
+  // 카테고리 생성 mutation
+  const createMutation = useMutation({
+    mutationFn: () =>
+      categoryAPI.addCategory(choosedShop!.storeId, addCategory),
+    onSuccess: () => {
+      alert("카테고리 등록이 완료되었습니다.");
 
-  const handleSubmit = async () => {
-    if (!choosedShop) return;
-
-    try {
-      const response = await categoryAPI.addCategory(
-        choosedShop.storeId,
-        addCategory
-      );
-      console.log("카테고리 추가 성공", response);
-
-      // 성공 시 폼 초기화
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       setIsOpenAdd(false);
       setAddCategory({ name: "", displayOrder: 0 });
       setAddErrorText(false);
-    } catch (error) {
-      console.log("카테고리 추가 실패", error);
-    }
+    },
+    onError: (error) => {
+      console.error("카테고리 등록 실패:", error);
+      alert("카테고리 등록에 실패했습니다.");
+    },
+  });
+  const handleSubmit = async () => {
+    if (!choosedShop) return;
+    createMutation.mutate();
   };
 
   return (
@@ -52,8 +61,8 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
         <div className="flex items-start gap-4 mb-4 flex-1">
           {/* 카테고리 이름 */}
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              카테고리 이름
+            <label className="block text-md font-bold text-gray-700 mb-3">
+              카테고리 생성
             </label>
             <TextInput
               id="name"
@@ -66,24 +75,10 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
               show={addErrorText}
             />
           </div>
-
-          {/* 표시 순서 */}
-          <div className="w-24">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              순서
-            </label>
-            <TextInput
-              id="displayOrder"
-              type="number"
-              onChange={handleChange}
-              value={addCategory.displayOrder}
-              className="text-center"
-            />
-          </div>
         </div>
 
         {/* 버튼 영역 */}
-        <div className="flex justify-end gap-3 lg:my-5">
+        <div className="flex justify-end gap-3 lg:my-5 pt-3">
           <AcceptButton
             onClick={handleSubmit}
             className="px-4 py-2 text-sm !bg-green-600 !bg-none hover:!bg-green-700"
