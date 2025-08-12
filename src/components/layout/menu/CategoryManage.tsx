@@ -2,23 +2,15 @@
 
 import { SectionTitle } from "@/components/ui/title/SectionTitle";
 import { useShopStore } from "@/lib/store/shopStore";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NoShopGuide from "../NoShopGuide";
 import CategoryAdd from "./CategoryAdd";
 import CategoryContainer from "./CategoryContainer";
-import { categoryAPI } from "@/lib/api/category";
-import { useQuery } from "@tanstack/react-query";
 
 const CategoryManage = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
 
   const { choosedShop } = useShopStore();
-  // React Query로 데이터 조회
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => categoryAPI.getAllCategory(choosedShop!.storeId),
-    enabled: !!choosedShop,
-  });
 
   // 매장이 없는 경우 안내 컴포넌트 표시
   if (!choosedShop) {
