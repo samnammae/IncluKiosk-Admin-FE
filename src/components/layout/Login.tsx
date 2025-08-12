@@ -30,7 +30,7 @@ const Login = () => {
     try {
       console.log("Login form submitted:", loginForm);
       await authAPI.login(loginForm);
-      setIsLoggedIn();
+      setIsLoggedIn(true);
       closeLoginModal();
     } catch (error) {
       console.error("Login failed:", error);

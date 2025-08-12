@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, ChangeEvent } from "react";
 import DeleteButton from "../ui/button/DeleteButton";
 import { ShopDataType } from "@/app/dashboard/shop/[id]/page";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ShopFormProps {
   mode: "create" | "edit";
@@ -28,7 +29,7 @@ export default function ShopForm({
 }: ShopFormProps) {
   const router = useRouter();
   const isEditMode = mode === "edit";
-
+  const queryClient = useQueryClient();
   // 폼 데이터
   const [shopForm, setShopForm] = useState({
     name: "",
@@ -61,8 +62,44 @@ export default function ShopForm({
     address: true,
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  // 매장 생성 mutation
+  const createMutation = useMutation({
+    mutationFn: (formData: FormData) => shopAPI.addShop(formData),
+    onSuccess: () => {
+      alert("매장 등록이 완료되었습니다.");
+      // 매장 목록 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["shops"] });
+      router.push("/dashboard/shop");
+    },
+    onError: (error) => {
+      console.error("매장 등록 실패:", error);
+      alert("매장 등록에 실패했습니다.");
+    },
+  });
 
+  // 매장 수정 mutation
+  const updateMutation = useMutation({
+    mutationFn: ({
+      storeId,
+      formData,
+    }: {
+      storeId: string;
+      formData: FormData;
+    }) => shopAPI.updateShop(storeId, formData),
+    onSuccess: () => {
+      alert("매장 정보가 수정되었습니다.");
+      // 관련 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["shops"] });
+      queryClient.invalidateQueries({
+        queryKey: ["shop", initialData?.storeId],
+      });
+      router.push(`/dashboard/shop/${initialData?.storeId}`);
+    },
+    onError: (error) => {
+      console.error("매장 수정 실패:", error);
+      alert("매장 수정에 실패했습니다.");
+    },
+  });
   useEffect(() => {
     console.log("initialDatainitialDatainitialDatainitialData", initialData);
     if (initialData) {
@@ -171,7 +208,6 @@ export default function ShopForm({
   // 폼 제출
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setIsLoading(true);
 
     // 유효성 검사
     const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
@@ -184,53 +220,45 @@ export default function ShopForm({
     setValidations(newValidations);
     const isAllValid = Object.values(newValidations).every((value) => value);
 
-    if (isAllValid) {
-      try {
-        // FormData 생성
-        const formData = new FormData();
-
-        const requestData = {
-          name: shopForm.name.trim(),
-          phone: shopForm.phone.trim(),
-          address: shopForm.address.trim(),
-          introduction: shopForm.introduction.trim(),
-          mainColor: shopForm.mainColor,
-          subColor: shopForm.subColor,
-          textColor: shopForm.textColor,
-        };
-
-        formData.append(
-          "request",
-          new Blob([JSON.stringify(requestData)], {
-            type: "application/json",
-          })
-        );
-
-        // 파일 추가 (새로 선택된 파일만)
-        if (files.mainImg) formData.append("mainImg", files.mainImg);
-        if (files.logoImg) formData.append("logoImg", files.logoImg);
-        if (files.startBackground)
-          formData.append("startBackground", files.startBackground);
-
-        if (isEditMode && initialData?.storeId) {
-          // 수정
-          await shopAPI.updateShop(initialData.storeId, formData);
-          alert("매장 정보가 수정되었습니다.");
-          router.push(`/dashboard/shop/${initialData.storeId}`);
-        } else {
-          // 생성
-          await shopAPI.addShop(formData);
-          alert("매장 등록이 완료되었습니다.");
-          router.push("/dashboard/shop");
-        }
-      } catch (error) {
-        console.error(`매장 ${isEditMode ? "수정" : "등록"} 실패:`, error);
-        alert(`매장 ${isEditMode ? "수정" : "등록"}에 실패했습니다.`);
-      }
+    if (!isAllValid) {
+      return;
     }
 
-    setIsLoading(false);
+    // FormData 생성
+    const formData = new FormData();
+
+    const requestData = {
+      name: shopForm.name.trim(),
+      phone: shopForm.phone.trim(),
+      address: shopForm.address.trim(),
+      introduction: shopForm.introduction.trim(),
+      mainColor: shopForm.mainColor,
+      subColor: shopForm.subColor,
+      textColor: shopForm.textColor,
+    };
+
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(requestData)], {
+        type: "application/json",
+      })
+    );
+
+    // 파일 추가 (새로 선택된 파일만)
+    if (files.mainImg) formData.append("mainImg", files.mainImg);
+    if (files.logoImg) formData.append("logoImg", files.logoImg);
+    if (files.startBackground)
+      formData.append("startBackground", files.startBackground);
+
+    // Mutation 실행
+    if (isEditMode && initialData?.storeId) {
+      updateMutation.mutate({ storeId: initialData.storeId, formData });
+    } else {
+      createMutation.mutate(formData);
+    }
   };
+
+  const isLoading = createMutation.isPending || updateMutation.isPending;
 
   return (
     <div className="max-w-8xl mx-auto p-2">

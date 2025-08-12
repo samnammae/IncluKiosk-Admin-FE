@@ -4,36 +4,25 @@ import { useEffect, useState } from "react";
 import { shopAPI } from "@/lib/api/shop";
 import { ShopType, useShopStore } from "@/lib/store/shopStore";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 const SidebarShopList = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { shops, choosedShop, setShops, setChooseShop } = useShopStore();
 
-  // API 호출 함수
-  const getAllShops = async () => {
-    setIsLoading(true);
-    try {
-      const response = await shopAPI.getAllShop();
-      if (response.success) {
-        setShops(response.data, response.data.length);
-
-        // 첫 번째 매장을 기본 선택
-        if (response.data && response.data.length > 0 && !choosedShop) {
-          setChooseShop(response.data[0]); // response.data.stores[0] → response.data[0]
-        }
-      }
-    } catch (error) {
-      console.error("매장 조회 실패:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // React Query로 데이터 조회
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["shops"],
+    queryFn: shopAPI.getAllShop,
+  });
 
   useEffect(() => {
-    getAllShops();
-  }, []);
+    if (data?.success && data.data) {
+      setShops(data.data, data.data.length);
+      setChooseShop(data.data[0]); //첫번째 매장 기본 선택
+    }
+  }, [data, setShops]);
 
   const handleShopSelect = (shop: ShopType) => {
     setChooseShop(shop);

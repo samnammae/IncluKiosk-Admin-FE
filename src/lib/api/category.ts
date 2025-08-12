@@ -12,7 +12,7 @@ export const categoryAPI = {
     return response.data;
   },
   updateCategory: async (shopId: number, data: updateCategoryData[]) => {
-    const response = await api.put(`/menu/${shopId}/category`, data);
+    const response = await api.patch(`/menu/${shopId}/category`, data);
     console.log("카테고리 수정", response.data);
     return response.data;
   },

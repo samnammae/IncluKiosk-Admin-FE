@@ -1,7 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 import CategoryUpdateModal from "./CategoryUpdateModal";
-
+import { categoryAPI } from "@/lib/api/category";
+import { useQuery } from "@tanstack/react-query";
+import { useShopStore } from "@/lib/store/shopStore";
+import { menuAPI } from "@/lib/api/menu";
 export interface CategoryItem {
   id: string;
   name: string;
@@ -22,6 +25,36 @@ const CategoryContainer = () => {
   const [choosedCategory, setChooseCategory] = useState<CategoryItem | null>(
     null
   );
+
+  const { choosedShop } = useShopStore();
+  // const { data, isLoading, error } = useQuery({
+  //   queryKey: ["categories"],
+  //   queryFn: () => categoryAPI.getAllCategory(choosedShop!.storeId),
+  //   enabled: !!choosedShop,
+  // });
+  const {
+    data: data1,
+    isLoading: isLoading1,
+    error: error1,
+  } = useQuery({
+    queryKey: ["categories", "first", choosedShop?.storeId],
+    queryFn: () => categoryAPI.getAllCategory(choosedShop!.storeId),
+    enabled: !!choosedShop,
+  });
+
+  const {
+    data: data2,
+    isLoading: isLoading2,
+    error: error2,
+  } = useQuery({
+    queryKey: ["categories", "second", choosedShop?.storeId],
+    queryFn: () => menuAPI.getAllMenu(choosedShop!.storeId),
+    enabled: !!choosedShop,
+  });
+  useEffect(() => {
+    console.log("api테스트 카테고리", data1);
+    console.log("api테스트 메뉴", data2);
+  }, [data1, data2]);
   // 드래그 시작
   const dragStart = (e: React.DragEvent<HTMLDivElement>, position: number) => {
     dragItem.current = position;
