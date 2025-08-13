@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import AcceptButton from "@/components/ui/button/AcceptButton";
 import CancelButton from "@/components/ui/button/CancelButton";
 import { ErrorMessage } from "@/components/ui/form/ErrorMessage";
@@ -11,52 +11,74 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 interface CategoryAddProps {
   setIsOpenAdd: (value: boolean) => void;
 }
+
 const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
-  const { lastDisplayOrder } = useMenuStore();
+  const { lastDisplayOrder, categories } = useMenuStore();
   const [addCategory, setAddCategory] = useState({
     name: "",
-    displayOrder: lastDisplayOrder,
+    displayOrder: lastDisplayOrder + 1,
   });
   const [addErrorText, setAddErrorText] = useState(false);
   const { choosedShop } = useShopStore();
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setAddCategory((prev) => ({
+      ...prev,
+      displayOrder: lastDisplayOrder + 1,
+    }));
+  }, [lastDisplayOrder]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
+
     if (id === "name" && !value) setAddErrorText(true);
     else setAddErrorText(false);
 
-    setAddCategory({
+    const newCategory = {
       ...addCategory,
       [id]: id === "displayOrder" ? Number(value) : value,
-    });
+    };
+
+    setAddCategory(newCategory);
   };
+
   // 카테고리 생성 mutation
   const createMutation = useMutation({
-    mutationFn: () =>
-      categoryAPI.addCategory(choosedShop!.storeId, addCategory),
-    onSuccess: () => {
+    mutationFn: () => {
+      return categoryAPI.addCategory(choosedShop!.storeId, addCategory);
+    },
+    onSuccess: (response) => {
+      console.log("✅ 카테고리 생성 성공:", response);
       alert("카테고리 등록이 완료되었습니다.");
 
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["category"] });
       setIsOpenAdd(false);
-      setAddCategory({ name: "", displayOrder: 0 });
+      setAddCategory({ name: "", displayOrder: lastDisplayOrder + 1 });
       setAddErrorText(false);
     },
     onError: (error) => {
-      console.error("카테고리 등록 실패:", error);
+      console.error("❌ 카테고리 생성 실패:", error);
       alert("카테고리 등록에 실패했습니다.");
     },
   });
+
   const handleSubmit = async () => {
-    if (!choosedShop) return;
     createMutation.mutate();
   };
 
   return (
     <div className="bg-gray-50 p-3 rounded-lg border mb-5">
+      {/* 🔧 디버깅 정보 표시 */}
+      <div className="bg-blue-100 p-2 rounded mb-3 text-xs">
+        <p>디버깅: lastDisplayOrder = {lastDisplayOrder}</p>
+        <p>다음 순서: {lastDisplayOrder + 1}</p>
+        <p>현재 입력값: {JSON.stringify(addCategory)}</p>
+      </div>
+
       <div className="flex flex-col lg:flex-row lg:gap-10 ">
         <div className="flex items-start gap-4 mb-4 flex-1">
           {/* 카테고리 이름 */}
@@ -88,7 +110,7 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
           <CancelButton
             onClick={() => {
               setIsOpenAdd(false);
-              setAddCategory({ name: "", displayOrder: 0 });
+              setAddCategory({ name: "", displayOrder: lastDisplayOrder + 1 });
               setAddErrorText(false);
             }}
             className="px-4 py-2 text-sm"
