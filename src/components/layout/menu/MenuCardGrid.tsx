@@ -2,15 +2,7 @@
 import MenuCard from "@/components/ui/card/MenuCard";
 import React from "react";
 import EmptyMenu from "./EmptyMenu";
-export interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  optionCategories: string[];
-  isSoldOut: boolean;
-}
+import { MenuItem } from "@/lib/store/MenuStore";
 
 interface MenuCardGridProps {
   data: MenuItem[];

@@ -3,7 +3,6 @@ import SearchBar from "@/components/ui/card/SearchBar";
 import ViewMode from "@/components/ui/card/ViewMode";
 import { SectionTitle } from "@/components/ui/title/SectionTitle";
 import MenuCardGrid from "./MenuCardGrid";
-import { mockMenuData } from "./mockMenuData";
 import React, { useState, useMemo } from "react";
 import MenuListContainer from "./MenuListContainer";
 import { useMenuStore } from "@/lib/store/MenuStore";
@@ -16,15 +15,17 @@ const MenuManage = () => {
 
   const [addModalOpen, setAddModalOpen] = useState(false);
 
-  const { menus } = useMenuStore();
+  const { categories, menus } = useMenuStore();
+
   console.log("menus조회", menus);
   // 현재 선택된 카테고리의 메뉴들
+  // 이 부분은 이미 올바르게 작성되어 있음
   const currentMenus = useMemo(() => {
     if (selectedCategory === "전체") {
-      return Object.values(mockMenuData.data.menusByCategory).flat();
+      return Object.values(menus).flat(); // 모든 카테고리의 메뉴를 합침
     }
-    return mockMenuData.data.menusByCategory[selectedCategory] || [];
-  }, [selectedCategory]);
+    return menus[selectedCategory] || [];
+  }, [menus, selectedCategory]);
 
   // 검색 필터링된 메뉴들
   const filteredMenus = useMemo(() => {
@@ -97,17 +98,17 @@ const MenuManage = () => {
             >
               전체
             </button>
-            {mockMenuData.data.categories.map((category) => (
+            {categories.map((category) => (
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={category.id}
+                onClick={() => setSelectedCategory(category.name)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedCategory === category
+                  selectedCategory === category.name
                     ? "bg-blue-500 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {category}
+                {category.name}
               </button>
             ))}
           </div>

@@ -1,14 +1,6 @@
 "use client";
+import { MenuItem } from "@/lib/store/MenuStore";
 import React from "react";
-export interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  optionCategories: string[];
-  isSoldOut: boolean;
-}
 
 interface MenuCardProps {
   item: MenuItem;
@@ -26,15 +18,15 @@ const MenuCard: React.FC<MenuCardProps> = ({
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ko-KR").format(price);
   };
-
+  console.log("이미지", item);
   return (
     <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 hover:transform hover:-translate-y-1">
       {/* 메뉴 이미지 */}
       <div className="relative mb-4">
         <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
-          {item.image ? (
+          {item.imageUrl ? (
             <img
-              src={item.image}
+              src={item.imageUrl}
               alt={item.name}
               className="w-full h-full object-cover"
             />

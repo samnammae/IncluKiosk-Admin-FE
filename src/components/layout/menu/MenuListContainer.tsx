@@ -17,17 +17,7 @@ import {
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { visuallyHidden } from "@mui/utils";
 import EmptyMenu from "./EmptyMenu";
-
-// MenuItem 타입 정의
-interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  optionCategories: string[];
-  isSoldOut: boolean;
-}
+import { MenuItem } from "@/lib/store/MenuStore";
 
 interface HeadCell {
   id: keyof MenuItem | "actions";
@@ -230,11 +220,11 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
                         }}
                       >
                         <Avatar
-                          src={row.image || ""}
+                          src={row.imageUrl || ""}
                           alt={row.name}
                           sx={{ width: 40, height: 40 }}
                         >
-                          {!row.image && row.name.charAt(0)}
+                          {!row.imageUrl && row.name.charAt(0)}
                         </Avatar>
                         <Box sx={{ textAlign: "left" }}>
                           <Box sx={{ fontWeight: 600, mb: 0.5 }}>
