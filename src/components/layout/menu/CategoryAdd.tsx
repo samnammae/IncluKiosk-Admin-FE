@@ -66,19 +66,8 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
     },
   });
 
-  const handleSubmit = async () => {
-    createMutation.mutate();
-  };
-
   return (
     <div className="bg-gray-50 p-3 rounded-lg border mb-5">
-      {/* 🔧 디버깅 정보 표시 */}
-      <div className="bg-blue-100 p-2 rounded mb-3 text-xs">
-        <p>디버깅: lastDisplayOrder = {lastDisplayOrder}</p>
-        <p>다음 순서: {lastDisplayOrder + 1}</p>
-        <p>현재 입력값: {JSON.stringify(addCategory)}</p>
-      </div>
-
       <div className="flex flex-col lg:flex-row lg:gap-10 ">
         <div className="flex items-start gap-4 mb-4 flex-1">
           {/* 카테고리 이름 */}
@@ -102,7 +91,9 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
         {/* 버튼 영역 */}
         <div className="flex justify-end gap-3 lg:my-5 pt-3">
           <AcceptButton
-            onClick={handleSubmit}
+            onClick={() => {
+              createMutation.mutate();
+            }}
             className="px-4 py-2 text-sm !bg-green-600 !bg-none hover:!bg-green-700"
           >
             추가
