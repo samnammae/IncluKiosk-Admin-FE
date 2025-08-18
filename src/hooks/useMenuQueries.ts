@@ -42,7 +42,7 @@ export const useMenuQuery = () => {
 
   useEffect(() => {
     if (query.isSuccess && query.data) {
-      const menuData = query.data.data || [];
+      const menuData = query.data.data.menusByCategory || [];
       setMenus(menuData);
     } else if (!choosedShop) {
       clearMenuData();
