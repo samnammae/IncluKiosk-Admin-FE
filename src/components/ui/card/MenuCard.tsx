@@ -69,7 +69,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
         </p>
 
         {/* 옵션 카테고리 */}
-        {item.optionCategories.length > 0 ? (
+        {item?.optionCategories?.length > 0 ? (
           <div className="mb-3">
             <div className="flex flex-wrap gap-1">
               {item.optionCategories.map((option, index) => (
