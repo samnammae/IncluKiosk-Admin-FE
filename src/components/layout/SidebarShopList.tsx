@@ -5,14 +5,18 @@ import { shopAPI } from "@/lib/api/shop";
 import { ShopType, useShopStore } from "@/lib/store/shopStore";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useMenuAndCategory } from "@/hooks/useMenuQueries";
 
 const SidebarShopList = () => {
+  const result = useMenuAndCategory();
+  console.log("통합 훅 호출 자동화", result);
+
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { shops, choosedShop, setShops, setChooseShop } = useShopStore();
 
-  // React Query로 데이터 조회
-  const { data, isLoading, error } = useQuery({
+  // 데이터 조회
+  const { data, isLoading } = useQuery({
     queryKey: ["shops"],
     queryFn: shopAPI.getAllShop,
   });

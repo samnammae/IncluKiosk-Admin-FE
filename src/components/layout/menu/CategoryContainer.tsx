@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 import CategoryUpdateModal from "./CategoryUpdateModal";
 import { useMenuStore } from "@/lib/store/MenuStore";
-import { useCategoryQuery } from "@/hooks/useMenuQueries";
 
 export interface CategoryItem {
   id: string;
@@ -20,7 +19,6 @@ const CategoryContainer = () => {
   );
 
   const { categories } = useMenuStore();
-  const categoryQuery = useCategoryQuery();
 
   // 드래그 시작
   const dragStart = (e: React.DragEvent<HTMLDivElement>, position: number) => {
@@ -102,9 +100,7 @@ const CategoryContainer = () => {
         {/* 카테고리가 없을 때 */}
         {categories.length === 0 && (
           <div className="text-gray-500 text-center w-full py-8">
-            {categoryQuery.isLoading
-              ? "카테고리를 불러오는 중..."
-              : "등록된 카테고리가 없습니다."}
+            등록된 카테고리가 없습니다
           </div>
         )}
       </div>
