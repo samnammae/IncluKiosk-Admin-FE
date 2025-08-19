@@ -5,8 +5,10 @@ import { useLoginModalStore } from "@/lib/store/loginStore";
 import { authAPI } from "@/lib/api/auth";
 import { useEffect } from "react";
 import LoginModal from "./modal/LoginModal";
+import { useNotification } from "@/hooks/useNotification";
 
 export default function Header() {
+  const showNotification = useNotification((state) => state.showNotification);
   const { isLoggedIn, setIsLoggedIn, openLoginModal } = useLoginModalStore();
   const handleLoginClick = () => {
     openLoginModal();
@@ -15,9 +17,10 @@ export default function Header() {
     try {
       await authAPI.logout();
       setIsLoggedIn(false);
-      alert("로그아웃 성공");
+      showNotification("로그아웃 성공", { severity: "success" });
     } catch (error) {
       console.error("Login failed:", error);
+      showNotification("로그아웃 실패", { severity: "error" });
     }
   };
   useEffect(() => {

@@ -3,10 +3,11 @@ import { authAPI } from "@/lib/api/auth";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState } from "react";
 import BackIcon from "../ui/icon/BackIcon";
+import { useNotification } from "@/hooks/useNotification";
 
 const Signup = () => {
   const { changeMode } = useLoginModalStore();
-
+  const showNotification = useNotification((state) => state.showNotification);
   // 유효성 검사 상태
   const [validations, setValidations] = useState({
     email: true,
@@ -54,7 +55,14 @@ const Signup = () => {
 
     if (isAllValid) {
       console.log("Registration form submitted:", joinForm);
-      await authAPI.signup(joinForm);
+      try {
+        await authAPI.signup(joinForm);
+        showNotification("회원가입 성공", { severity: "success" });
+      } catch (error) {
+        console.log("회원가입 실패");
+        showNotification("회원가입 실패", { severity: "error" });
+      }
+
       changeMode(); // 성공시 로그인 모드로 변경
     }
 

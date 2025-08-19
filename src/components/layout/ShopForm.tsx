@@ -16,6 +16,7 @@ import { useState, useEffect, ChangeEvent } from "react";
 import DeleteButton from "../ui/button/DeleteButton";
 import { ShopDataType } from "@/app/dashboard/shop/[id]/page";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from "@/hooks/useNotification";
 
 interface ShopFormProps {
   mode: "create" | "edit";
@@ -30,6 +31,7 @@ export default function ShopForm({
   const router = useRouter();
   const isEditMode = mode === "edit";
   const queryClient = useQueryClient();
+  const showNotification = useNotification((state) => state.showNotification);
   // 폼 데이터
   const [shopForm, setShopForm] = useState({
     name: "",
@@ -66,14 +68,14 @@ export default function ShopForm({
   const createMutation = useMutation({
     mutationFn: (formData: FormData) => shopAPI.addShop(formData),
     onSuccess: () => {
-      alert("매장 등록이 완료되었습니다.");
+      showNotification("매장이 등록되었습니다", { severity: "success" });
       // 매장 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ["shops"] });
       router.push("/dashboard/shop");
     },
     onError: (error) => {
       console.error("매장 등록 실패:", error);
-      alert("매장 등록에 실패했습니다.");
+      showNotification("메장 등록 실패", { severity: "error" });
     },
   });
 
@@ -87,7 +89,7 @@ export default function ShopForm({
       formData: FormData;
     }) => shopAPI.updateShop(storeId, formData),
     onSuccess: () => {
-      alert("매장 정보가 수정되었습니다.");
+      showNotification("매장이 수정되었습니다", { severity: "success" });
       // 관련 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ["shops"] });
       queryClient.invalidateQueries({
@@ -97,7 +99,7 @@ export default function ShopForm({
     },
     onError: (error) => {
       console.error("매장 수정 실패:", error);
-      alert("매장 수정에 실패했습니다.");
+      showNotification("메장 수정 실패", { severity: "error" });
     },
   });
   useEffect(() => {

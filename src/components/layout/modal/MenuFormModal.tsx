@@ -6,6 +6,7 @@ import { useMenuStore, MenuItem } from "@/lib/store/MenuStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { menuAPI } from "@/lib/api/menu";
 import { useShopStore } from "@/lib/store/shopStore";
+import { useNotification } from "@/hooks/useNotification";
 
 interface MenuFormModalProps {
   isOpen: boolean;
@@ -130,6 +131,7 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
         : [...prev.optionCategories, option],
     }));
   };
+  const showNotification = useNotification((state) => state.showNotification);
 
   // 생성 mutation
   const createMutation = useMutation({
@@ -140,11 +142,12 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
       console.log("메뉴 생성 성공:");
       queryClient.invalidateQueries({ queryKey: ["menu"] });
       onClose();
-      alert("메뉴 등록에 성공했습니다.");
+
+      showNotification("메뉴가 등록되었습니다", { severity: "success" });
     },
     onError: (error) => {
       console.error("❌ 메뉴 생성 실패:", error);
-      alert("메뉴 등록에 실패했습니다.");
+      showNotification("메뉴 생성 실패", { severity: "error" });
     },
   });
 
@@ -157,11 +160,12 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
       console.log("메뉴 수정 성공:");
       queryClient.invalidateQueries({ queryKey: ["menu"] });
       onClose();
-      alert("메뉴 수정에 성공했습니다.");
+
+      showNotification("메뉴 수정에 성공했습니다", { severity: "success" });
     },
     onError: (error) => {
       console.error("❌ 메뉴 수정 실패:", error);
-      alert("메뉴 수정에 실패했습니다.");
+      showNotification("메뉴 수정 실패", { severity: "error" });
     },
   });
 
