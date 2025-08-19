@@ -8,6 +8,7 @@ export interface MenuItem {
   imageUrl: string; // 메뉴 이미지 URL
   optionCategories: string[]; // 적용 가능한 옵션명 종류
   isSoldOut: boolean; // 품절 여부
+  categoryId?: string;
 }
 
 interface CategoryType {
