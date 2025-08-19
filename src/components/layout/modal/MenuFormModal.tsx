@@ -1,22 +1,26 @@
 import ClosedIcon from "@/components/ui/icon/ClosedIcon";
 import AcceptButton from "@/components/ui/button/AcceptButton";
 import CancelButton from "@/components/ui/button/CancelButton";
-import React, { useState } from "react";
-import { useMenuStore } from "@/lib/store/MenuStore";
+import React, { useState, useEffect } from "react";
+import { useMenuStore, MenuItem } from "@/lib/store/MenuStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { menuAPI } from "@/lib/api/menu";
 import { useShopStore } from "@/lib/store/shopStore";
 
-interface AddMenuModalProps {
+interface MenuFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  mode: "create" | "update";
+  editMenu?: MenuItem | null;
 }
 
-const AddMenuModal: React.FC<AddMenuModalProps> = ({
+const MenuFormModal: React.FC<MenuFormModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
+  mode,
+  editMenu,
 }) => {
   const queryClient = useQueryClient();
   const [menuData, setMenuData] = useState({
@@ -37,6 +41,34 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
   // 옵션 카테고리 임의 목록
   const availableOptions = ["사이즈", "온도", "시럽", "토핑"];
 
+  // 수정 모드일 때 기존 데이터로 폼 초기화
+  useEffect(() => {
+    if (mode === "update" && editMenu && isOpen) {
+      setMenuData({
+        name: editMenu.name,
+        price: editMenu.price.toString(),
+        description: editMenu.description,
+        category: editMenu.categoryId || "",
+        optionCategories: editMenu.optionCategories,
+        isSoldOut: editMenu.isSoldOut,
+      });
+
+      // 기존 이미지가 있으면 미리보기 설정
+      if (editMenu.imageUrl) {
+        setImagePreview(editMenu.imageUrl);
+      }
+    } else if (mode === "create") {
+      // 생성 모드일 때는 초기화
+      handleReset();
+    }
+  }, [mode, editMenu, isOpen]);
+  useEffect(() => {
+    console.log(menuData);
+    console.log(menuData);
+    console.log(menuData);
+    console.log(menuData);
+    console.log(menuData);
+  }, [menuData]);
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -83,10 +115,11 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
 
   const removeImage = () => {
     setImageFile(null);
-    if (imagePreview) {
+    if (imagePreview && !imagePreview.startsWith("http")) {
+      // 새로 업로드한 이미지만 URL 해제 (기존 서버 이미지는 제외)
       URL.revokeObjectURL(imagePreview);
-      setImagePreview(null);
     }
+    setImagePreview(null);
   };
 
   const handleOptionToggle = (option: string) => {
@@ -98,12 +131,13 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
     }));
   };
 
+  // 생성 mutation
   const createMutation = useMutation({
     mutationFn: (formData: FormData) => {
       return menuAPI.addMenu(choosedShop!.storeId, formData);
     },
     onSuccess: () => {
-      console.log(" 메뉴 생성 성공:");
+      console.log("메뉴 생성 성공:");
       queryClient.invalidateQueries({ queryKey: ["menu"] });
       onClose();
       alert("메뉴 등록에 성공했습니다.");
@@ -114,10 +148,27 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
     },
   });
 
+  // 수정 mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, formData }: { id: string; formData: FormData }) => {
+      return menuAPI.updateMenu(choosedShop!.storeId, id, formData);
+    },
+    onSuccess: () => {
+      console.log("메뉴 수정 성공:");
+      queryClient.invalidateQueries({ queryKey: ["menu"] });
+      onClose();
+      alert("메뉴 수정에 성공했습니다.");
+    },
+    onError: (error) => {
+      console.error("❌ 메뉴 수정 실패:", error);
+      alert("메뉴 수정에 실패했습니다.");
+    },
+  });
+
   const handleSubmit = () => {
     const formData = new FormData();
 
-    // JSON
+    // JSON 데이터
     const requestData = {
       name: menuData.name,
       price: Number(menuData.price),
@@ -134,18 +185,23 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
       })
     );
 
-    // 이미지 파일 추가
+    // 새로운 이미지 파일이 있으면 추가
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
     console.log("Request Data:", requestData);
-    createMutation.mutate(formData);
+
+    if (mode === "create") {
+      createMutation.mutate(formData);
+    } else if (mode === "update" && editMenu) {
+      updateMutation.mutate({ id: editMenu.id, formData });
+    }
+
     onConfirm();
   };
 
-  const handleClose = () => {
-    // 폼 초기화
+  const handleReset = () => {
     setMenuData({
       name: "",
       price: "",
@@ -155,18 +211,24 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
       isSoldOut: false,
     });
     setImageFile(null);
-    if (imagePreview) {
+    if (imagePreview && !imagePreview.startsWith("http")) {
       URL.revokeObjectURL(imagePreview);
-      setImagePreview(null);
     }
+    setImagePreview(null);
     setIsDragOver(false);
+  };
+
+  const handleClose = () => {
+    handleReset();
     onClose();
   };
 
   if (!isOpen) return null;
+
+  const isLoading = createMutation.isPending || updateMutation.isPending;
+
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      {/* <div className="p-6 relative max-w-lg w-full mx-4 bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"> */}
       <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-2xl w-full">
         <div className="max-h-[90vh] overflow-y-auto scrollbar-hide">
           <div className="p-6">
@@ -174,13 +236,14 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
+              disabled={isLoading}
             >
               <ClosedIcon />
             </button>
 
             {/* 제목 */}
             <h2 className="text-xl font-bold text-gray-900 text-center mb-6">
-              새 메뉴 추가
+              {mode === "create" ? "새 메뉴 추가" : "메뉴 수정"}
             </h2>
 
             {/* 폼 내용 */}
@@ -199,6 +262,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                   placeholder="예: 아메리카노"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -216,6 +280,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                   placeholder="예: 4500"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -231,6 +296,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   required
+                  disabled={isLoading}
                 >
                   <option value="">카테고리를 선택하세요</option>
                   {categories.map((category) => (
@@ -253,6 +319,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                   placeholder="메뉴에 대한 간단한 설명을 입력하세요"
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors resize-none"
+                  disabled={isLoading}
                 />
               </div>
 
@@ -271,13 +338,14 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                       isDragOver
                         ? "border-blue-400 bg-blue-50"
                         : "border-gray-300"
-                    }`}
+                    } ${isLoading ? "pointer-events-none opacity-50" : ""}`}
                   >
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      disabled={isLoading}
                     />
                     <div className="flex flex-col items-center justify-center h-full text-gray-500">
                       <svg
@@ -312,6 +380,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                       onClick={removeImage}
                       className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                       type="button"
+                      disabled={isLoading}
                     >
                       <svg
                         className="w-3 h-3"
@@ -340,13 +409,16 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                   {availableOptions.map((option) => (
                     <label
                       key={option}
-                      className="flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                      className={`flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer ${
+                        isLoading ? "pointer-events-none opacity-50" : ""
+                      }`}
                     >
                       <input
                         type="checkbox"
-                        checked={menuData.optionCategories.includes(option)}
+                        checked={menuData?.optionCategories?.includes(option)}
                         onChange={() => handleOptionToggle(option)}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled={isLoading}
                       />
                       <span className="text-sm text-gray-700">{option}</span>
                     </label>
@@ -361,12 +433,25 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
                 onClick={handleSubmit}
                 className="text-sm !p-3"
                 disabled={
-                  !menuData.name || !menuData.price || !menuData.category
+                  !menuData.name ||
+                  !menuData.price ||
+                  !menuData.category ||
+                  isLoading
                 }
               >
-                메뉴 추가
+                {isLoading
+                  ? mode === "create"
+                    ? "등록 중..."
+                    : "수정 중..."
+                  : mode === "create"
+                  ? "메뉴 추가"
+                  : "메뉴 수정"}
               </AcceptButton>
-              <CancelButton onClick={handleClose} className="text-sm !p-3">
+              <CancelButton
+                onClick={handleClose}
+                className="text-sm !p-3"
+                disabled={isLoading}
+              >
                 취소
               </CancelButton>
             </div>
@@ -377,4 +462,4 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
   );
 };
 
-export default AddMenuModal;
+export default MenuFormModal;
