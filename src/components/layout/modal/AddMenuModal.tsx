@@ -105,7 +105,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({
     onSuccess: () => {
       console.log(" 메뉴 생성 성공:");
       queryClient.invalidateQueries({ queryKey: ["menu"] });
-
+      onClose();
       alert("메뉴 등록에 성공했습니다.");
     },
     onError: (error) => {
