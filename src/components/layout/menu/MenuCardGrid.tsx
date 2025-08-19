@@ -2,26 +2,16 @@
 import MenuCard from "@/components/ui/card/MenuCard";
 import React from "react";
 import EmptyMenu from "./EmptyMenu";
-export interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  optionCategories: string[];
-  isSoldOut: boolean;
-}
+import { MenuItem } from "@/lib/store/MenuStore";
 
 interface MenuCardGridProps {
   data: MenuItem[];
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onDelete: (id: string) => void;
   onToggleSoldOut?: (id: string) => void;
 }
 
 const MenuCardGrid: React.FC<MenuCardGridProps> = ({
   data,
-  onEdit,
   onDelete,
   onToggleSoldOut,
 }) => {
@@ -35,7 +25,6 @@ const MenuCardGrid: React.FC<MenuCardGridProps> = ({
         <MenuCard
           key={item.id}
           item={item}
-          onEdit={onEdit}
           onDelete={onDelete}
           onToggleSoldOut={onToggleSoldOut}
         />

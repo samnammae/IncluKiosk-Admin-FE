@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { authAPI } from "@/lib/api/auth";
 import { useEffect } from "react";
+import LoginModal from "./modal/LoginModal";
 
 export default function Header() {
   const { isLoggedIn, setIsLoggedIn, openLoginModal } = useLoginModalStore();
@@ -13,17 +14,21 @@ export default function Header() {
   const handleLogoutClick = async () => {
     try {
       await authAPI.logout();
-      setIsLoggedIn();
+      setIsLoggedIn(false);
       alert("로그아웃 성공");
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
   useEffect(() => {
-    console.log(isLoggedIn);
+    if (window.localStorage.getItem("accessToken")) setIsLoggedIn(true);
+    else setIsLoggedIn(false);
+    console.log("isLoggedInisLoggedInisLoggedIn", isLoggedIn);
   }, []);
   return (
     <>
+      <LoginModal />
+
       <header className="w-full h-16 flex justify-between items-center px-4">
         <div className="">IncluKiosk</div>
         <div className="flex gap-8">
@@ -32,19 +37,19 @@ export default function Header() {
               <div className="">대시보드</div>
             </Link>
           ) : (
-            <div className="" onClick={handleLoginClick}>
+            <button className="" onClick={handleLoginClick}>
               대시보드
-            </div>
+            </button>
           )}
 
           {isLoggedIn ? (
-            <div className="" onClick={handleLogoutClick}>
+            <button className="" onClick={handleLogoutClick}>
               로그아웃
-            </div>
+            </button>
           ) : (
-            <div className="" onClick={handleLoginClick}>
+            <button className="" onClick={handleLoginClick}>
               로그인
-            </div>
+            </button>
           )}
         </div>
       </header>

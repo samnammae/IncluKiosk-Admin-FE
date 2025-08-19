@@ -1,50 +1,70 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import AcceptButton from "@/components/ui/button/AcceptButton";
 import CancelButton from "@/components/ui/button/CancelButton";
 import { ErrorMessage } from "@/components/ui/form/ErrorMessage";
 import { TextInput } from "@/components/ui/form/TextInput";
 import { categoryAPI } from "@/lib/api/category";
 import { useShopStore } from "@/lib/store/shopStore";
+import { useMenuStore } from "@/lib/store/MenuStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface CategoryAddProps {
   setIsOpenAdd: (value: boolean) => void;
 }
+
 const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
-  const [addCategory, setAddCategory] = useState({ name: "", displayOrder: 0 });
+  const { lastDisplayOrder, categories } = useMenuStore();
+  const [addCategory, setAddCategory] = useState({
+    name: "",
+    displayOrder: lastDisplayOrder + 1,
+  });
   const [addErrorText, setAddErrorText] = useState(false);
   const { choosedShop } = useShopStore();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setAddCategory((prev) => ({
+      ...prev,
+      displayOrder: lastDisplayOrder + 1,
+    }));
+  }, [lastDisplayOrder]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
+
     if (id === "name" && !value) setAddErrorText(true);
     else setAddErrorText(false);
 
-    setAddCategory({
+    const newCategory = {
       ...addCategory,
       [id]: id === "displayOrder" ? Number(value) : value,
-    });
+    };
+
+    setAddCategory(newCategory);
   };
 
-  const handleSubmit = async () => {
-    if (!choosedShop) return;
+  // 카테고리 생성 mutation
+  const createMutation = useMutation({
+    mutationFn: () => {
+      return categoryAPI.addCategory(choosedShop!.storeId, addCategory);
+    },
+    onSuccess: (response) => {
+      console.log("✅ 카테고리 생성 성공:", response);
+      alert("카테고리 등록이 완료되었습니다.");
 
-    try {
-      const response = await categoryAPI.addCategory(
-        choosedShop.storeId,
-        addCategory
-      );
-      console.log("카테고리 추가 성공", response);
-
-      // 성공 시 폼 초기화
+      queryClient.invalidateQueries({ queryKey: ["category"] });
       setIsOpenAdd(false);
-      setAddCategory({ name: "", displayOrder: 0 });
+      setAddCategory({ name: "", displayOrder: lastDisplayOrder + 1 });
       setAddErrorText(false);
-    } catch (error) {
-      console.log("카테고리 추가 실패", error);
-    }
-  };
+    },
+    onError: (error) => {
+      console.error("❌ 카테고리 생성 실패:", error);
+      alert("카테고리 등록에 실패했습니다.");
+    },
+  });
 
   return (
     <div className="bg-gray-50 p-3 rounded-lg border mb-5">
@@ -52,8 +72,8 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
         <div className="flex items-start gap-4 mb-4 flex-1">
           {/* 카테고리 이름 */}
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              카테고리 이름
+            <label className="block text-md font-bold text-gray-700 mb-3">
+              카테고리 생성
             </label>
             <TextInput
               id="name"
@@ -66,26 +86,14 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
               show={addErrorText}
             />
           </div>
-
-          {/* 표시 순서 */}
-          <div className="w-24">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              순서
-            </label>
-            <TextInput
-              id="displayOrder"
-              type="number"
-              onChange={handleChange}
-              value={addCategory.displayOrder}
-              className="text-center"
-            />
-          </div>
         </div>
 
         {/* 버튼 영역 */}
-        <div className="flex justify-end gap-3 lg:my-5">
+        <div className="flex justify-end gap-3 lg:my-5 pt-3">
           <AcceptButton
-            onClick={handleSubmit}
+            onClick={() => {
+              createMutation.mutate();
+            }}
             className="px-4 py-2 text-sm !bg-green-600 !bg-none hover:!bg-green-700"
           >
             추가
@@ -93,7 +101,7 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
           <CancelButton
             onClick={() => {
               setIsOpenAdd(false);
-              setAddCategory({ name: "", displayOrder: 0 });
+              setAddCategory({ name: "", displayOrder: lastDisplayOrder + 1 });
               setAddErrorText(false);
             }}
             className="px-4 py-2 text-sm"

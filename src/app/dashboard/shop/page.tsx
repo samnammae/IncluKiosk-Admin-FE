@@ -7,44 +7,35 @@ import ViewMode from "@/components/ui/card/ViewMode";
 
 import { shopAPI } from "@/lib/api/shop";
 import { useShopStore } from "@/lib/store/shopStore";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import AcceptButton from "@/components/ui/button/AcceptButton";
 
 export default function ShopPage() {
-  const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const { shops, setShops } = useShopStore();
 
-  const getAllShops = async () => {
-    setIsLoading(true);
-    try {
-      const response = await shopAPI.getAllShop();
-      if (response.success) {
-        setShops(response.data, response.data.length);
-      }
-    } catch (error) {
-      console.error("매장 조회 실패:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // React Query로 데이터 조회
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["shops"],
+    queryFn: shopAPI.getAllShop,
+  });
 
   useEffect(() => {
-    getAllShops();
-  }, []);
+    if (data?.success && data.data) {
+      setShops(data.data, data.data.length);
+    }
+  }, [data, setShops]);
 
   // 검색 필터링
-  const filteredShops =
-    shops?.filter(
-      (shop) =>
-        shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        shop.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        shop.phone.includes(searchQuery)
-    ) || [];
-
-  console.log("shopsshopsshopsshopsshops", shops);
+  const filteredShops = shops.filter(
+    (shop) =>
+      shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      shop.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      shop.phone.includes(searchQuery)
+  );
 
   return (
     <div className="max-w-8xl mx-auto p-2">
@@ -56,7 +47,7 @@ export default function ShopPage() {
 
       {/* 검색 및 필터 바*/}
       <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-start  justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 items-start justify-between">
           <div className="flex-1">
             <SearchBar
               searchQuery={searchQuery}
@@ -72,7 +63,7 @@ export default function ShopPage() {
             onCardClick={() => setViewMode("card")}
             onListClick={() => setViewMode("list")}
           />
-        </div>{" "}
+        </div>
       </div>
 
       {/* 로딩 상태 */}
@@ -84,6 +75,21 @@ export default function ShopPage() {
                 <div key={i} className="bg-gray-200 rounded-lg h-48"></div>
               ))}
             </div>
+          </div>
+        </div>
+      ) : error ? (
+        // 에러상태
+        <div className="bg-white rounded-xl p-10 shadow-sm">
+          <div className="text-center py-12">
+            <p className="text-red-500 mb-4">
+              매장 정보를 불러오는데 실패했습니다.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              새로고침
+            </button>
           </div>
         </div>
       ) : (

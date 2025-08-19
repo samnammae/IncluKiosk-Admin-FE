@@ -17,17 +17,8 @@ import {
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { visuallyHidden } from "@mui/utils";
 import EmptyMenu from "./EmptyMenu";
-
-// MenuItem 타입 정의
-interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  optionCategories: string[];
-  isSoldOut: boolean;
-}
+import { MenuItem } from "@/lib/store/MenuStore";
+import MenuFormModal from "../modal/MenuFormModal";
 
 interface HeadCell {
   id: keyof MenuItem | "actions";
@@ -135,18 +126,21 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 // Props 타입 정의
 interface MenuListContainerProps {
   data: MenuItem[];
+  onDelete: (id: string) => void;
+  onToggleSoldOut?: (id: string) => void;
 }
 
-const MenuListContainer = ({ data }: MenuListContainerProps) => {
+const MenuListContainer = ({ data, onDelete }: MenuListContainerProps) => {
   // 받은 데이터를 그대로 사용
   const menuItems: MenuItem[] = useMemo(() => {
     return data;
   }, [data]);
-
+  const [chooseItem, setChooseItem] = useState<MenuItem | null>(null);
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof MenuItem>("name");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -169,16 +163,16 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
   };
 
   const handleEdit = (id: string) => {
-    console.log("Edit menu:", id);
+    const menuToEdit = data.find((menu) => menu.id === id);
+    if (menuToEdit) {
+      setChooseItem(menuToEdit);
+      setUpdateModalOpen(true);
+    }
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete menu:", id);
+    onDelete(id);
   };
-
-  // const handleToggleSoldOut = (id: string) => {
-  //   console.log("Toggle sold out:", id);
-  // };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ko-KR").format(price);
@@ -198,177 +192,190 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
     return <EmptyMenu />;
   }
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <TableContainer>
-          <Table
-            stickyHeader
-            aria-label="menu table"
-            sx={{ minWidth: 750 }}
-            size="medium"
-          >
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={menuItems.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const labelId = `enhanced-table-checkbox-${index}`;
+    <>
+      <Box sx={{ width: "100%" }}>
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <TableContainer>
+            <Table
+              stickyHeader
+              aria-label="menu table"
+              sx={{ minWidth: 750 }}
+              size="medium"
+            >
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={menuItems.length}
+              />
+              <TableBody>
+                {visibleRows.map((row, index) => {
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <TableCell component="th" id={labelId} align="center">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 2,
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Avatar
-                          src={row.image || ""}
-                          alt={row.name}
-                          sx={{ width: 40, height: 40 }}
-                        >
-                          {!row.image && row.name.charAt(0)}
-                        </Avatar>
-                        <Box sx={{ textAlign: "left" }}>
-                          <Box sx={{ fontWeight: 600, mb: 0.5 }}>
-                            {row.name}
-                          </Box>
-                          <Box
-                            sx={{
-                              fontSize: "0.875rem",
-                              color: "text.secondary",
-                              maxWidth: 200,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {row.description}
-                          </Box>
-                        </Box>
-                      </Box>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Box sx={{ fontWeight: 600, color: "primary.main" }}>
-                        ₩{formatPrice(row.price)}
-                      </Box>
-                    </TableCell>
-                    <TableCell align="center">
-                      {row.optionCategories.length > 0 ? (
+                  return (
+                    <TableRow
+                      hover
+                      tabIndex={-1}
+                      key={row.id}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <TableCell component="th" id={labelId} align="center">
                         <Box
                           sx={{
-                            mt: 0.5,
                             display: "flex",
-                            gap: 0.5,
-                            flexWrap: "wrap",
+                            alignItems: "center",
+                            gap: 2,
                             justifyContent: "center",
                           }}
                         >
-                          {row.optionCategories
-                            .slice(0, 2)
-                            .map((option, idx) => (
+                          <Avatar
+                            src={row.imageUrl || ""}
+                            alt={row.name}
+                            sx={{ width: 40, height: 40 }}
+                          >
+                            {!row.imageUrl && row.name.charAt(0)}
+                          </Avatar>
+                          <Box sx={{ textAlign: "left" }}>
+                            <Box sx={{ fontWeight: 600, mb: 0.5 }}>
+                              {row.name}
+                            </Box>
+                            <Box
+                              sx={{
+                                fontSize: "0.875rem",
+                                color: "text.secondary",
+                                maxWidth: 200,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {row.description}
+                            </Box>
+                          </Box>
+                        </Box>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Box sx={{ fontWeight: 600, color: "primary.main" }}>
+                          ₩{formatPrice(row.price)}
+                        </Box>
+                      </TableCell>
+                      <TableCell align="center">
+                        {row?.optionCategories?.length > 0 ? (
+                          <Box
+                            sx={{
+                              mt: 0.5,
+                              display: "flex",
+                              gap: 0.5,
+                              flexWrap: "wrap",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {row?.optionCategories
+                              .slice(0, 2)
+                              .map((option, idx) => (
+                                <Chip
+                                  key={idx}
+                                  label={option}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: "0.75rem", height: 20 }}
+                                />
+                              ))}
+                            {row?.optionCategories?.length > 2 && (
                               <Chip
-                                key={idx}
-                                label={option}
+                                label={`+${row.optionCategories.length - 2}`}
                                 size="small"
                                 variant="outlined"
                                 sx={{ fontSize: "0.75rem", height: 20 }}
                               />
-                            ))}
-                          {row.optionCategories.length > 2 && (
-                            <Chip
-                              label={`+${row.optionCategories.length - 2}`}
-                              size="small"
-                              variant="outlined"
-                              sx={{ fontSize: "0.75rem", height: 20 }}
-                            />
-                          )}
+                            )}
+                          </Box>
+                        ) : (
+                          <span className=" text-slate-500 text-xs">
+                            옵션없음
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Chip
+                          label={row.isSoldOut ? "품절" : "판매중"}
+                          size="small"
+                          color={row.isSoldOut ? "error" : "success"}
+                          variant="filled"
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 0.5,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(row.id);
+                            }}
+                            sx={{ color: "primary.main" }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(row.id);
+                            }}
+                            sx={{ color: "error.main" }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
                         </Box>
-                      ) : (
-                        <span className=" text-slate-500 text-xs">
-                          옵션없음
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip
-                        label={row.isSoldOut ? "품절" : "판매중"}
-                        size="small"
-                        color={row.isSoldOut ? "error" : "success"}
-                        variant="filled"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: 0.5,
-                          justifyContent: "center",
-                        }}
-                      >
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEdit(row.id);
-                          }}
-                          sx={{ color: "primary.main" }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(row.id);
-                          }}
-                          sx={{ color: "error.main" }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: 101 * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={4} />
                   </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 101 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={4} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={menuItems.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="페이지당 행 수:"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${count}개 중 ${from}-${to}`
-          }
-        />
-      </Paper>
-    </Box>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={menuItems.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="페이지당 행 수:"
+            labelDisplayedRows={({ from, to, count }) =>
+              `${count}개 중 ${from}-${to}`
+            }
+          />
+        </Paper>
+      </Box>
+      {/* 수정 모달 */}
+      <MenuFormModal
+        isOpen={updateModalOpen}
+        onClose={() => {
+          setUpdateModalOpen(false);
+          setChooseItem(null);
+        }}
+        onConfirm={() => {}}
+        mode="update"
+        editMenu={chooseItem}
+      />
+    </>
   );
 };
 
