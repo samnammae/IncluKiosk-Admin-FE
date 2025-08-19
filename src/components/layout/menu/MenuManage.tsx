@@ -56,22 +56,6 @@ const MenuManage = () => {
       alert("메뉴 삭제에 실패했습니다.");
     },
   });
-  const updateMutation = useMutation({
-    mutationFn: ({ id, formData }: { id: string; formData: FormData }) => {
-      return menuAPI.updateMenu(choosedShop!.storeId, id, formData);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["menu"] });
-      alert("메뉴 수정에 성공했습니다.");
-    },
-    onError: (error) => {
-      console.error("❌ 메뉴 수정 실패:", error);
-      alert("메뉴 수정에 실패했습니다.");
-    },
-  });
-  const handleEdit = (id: string, formData: FormData) => {
-    updateMutation.mutate({ id, formData });
-  };
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
