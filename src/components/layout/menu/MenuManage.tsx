@@ -6,10 +6,10 @@ import MenuCardGrid from "./MenuCardGrid";
 import React, { useState, useMemo } from "react";
 import MenuListContainer from "./MenuListContainer";
 import { useMenuStore } from "@/lib/store/MenuStore";
-import AddMenuModal from "../modal/AddMenuModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { menuAPI } from "@/lib/api/menu";
 import { useShopStore } from "@/lib/store/shopStore";
+import MenuFormModal from "../modal/MenuFormModal";
 
 const MenuManage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,8 +21,8 @@ const MenuManage = () => {
   const { categories, menus } = useMenuStore();
 
   console.log("menus조회", menus);
+
   // 현재 선택된 카테고리의 메뉴들
-  // 이 부분은 이미 올바르게 작성되어 있음
   const currentMenus = useMemo(() => {
     if (selectedCategory === "전체") {
       return Object.values(menus).flat(); // 모든 카테고리의 메뉴를 합침
@@ -56,9 +56,21 @@ const MenuManage = () => {
       alert("메뉴 삭제에 실패했습니다.");
     },
   });
-
-  const handleEdit = (id: string) => {
-    console.log("Edit menu:", id);
+  const updateMutation = useMutation({
+    mutationFn: ({ id, formData }: { id: string; formData: FormData }) => {
+      return menuAPI.updateMenu(choosedShop!.storeId, id, formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["menu"] });
+      alert("메뉴 수정에 성공했습니다.");
+    },
+    onError: (error) => {
+      console.error("❌ 메뉴 수정 실패:", error);
+      alert("메뉴 수정에 실패했습니다.");
+    },
+  });
+  const handleEdit = (id: string, formData: FormData) => {
+    updateMutation.mutate({ id, formData });
   };
 
   const handleDelete = (id: string) => {
@@ -138,7 +150,6 @@ const MenuManage = () => {
         {viewMode === "card" && (
           <MenuCardGrid
             data={filteredMenus}
-            onEdit={handleEdit}
             onDelete={handleDelete}
             onToggleSoldOut={handleToggleSoldOut}
           />
@@ -148,18 +159,18 @@ const MenuManage = () => {
         {viewMode === "list" && (
           <MenuListContainer
             data={filteredMenus}
-            onEdit={handleEdit}
             onDelete={handleDelete}
             onToggleSoldOut={handleToggleSoldOut}
           />
         )}
       </div>
-      <AddMenuModal
+      <MenuFormModal
         isOpen={addModalOpen}
         onClose={() => {
           setAddModalOpen(false);
         }}
         onConfirm={() => {}}
+        mode="create"
       />
     </>
   );

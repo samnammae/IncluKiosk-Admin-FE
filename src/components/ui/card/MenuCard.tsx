@@ -1,27 +1,25 @@
 "use client";
 import ConfirmModal from "@/components/layout/modal/ConfirmModal";
+import MenuFormModal from "@/components/layout/modal/MenuFormModal";
 import { MenuItem } from "@/lib/store/MenuStore";
 
 import React, { useState } from "react";
 
 interface MenuCardProps {
   item: MenuItem;
-  onEdit?: (id: string) => void;
   onDelete: (id: string) => void;
   onToggleSoldOut?: (id: string) => void;
 }
 const MenuCard: React.FC<MenuCardProps> = ({
   item,
-  onEdit,
   onDelete,
   onToggleSoldOut,
 }) => {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ko-KR").format(price);
   };
-
   const [DeleteModalOpen, setDeleteModalOpen] = useState(false);
-
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const handleDelete = () => {
     onDelete(item.id);
     setDeleteModalOpen(false);
@@ -92,7 +90,9 @@ const MenuCard: React.FC<MenuCardProps> = ({
         {/* 액션 버튼들 */}
         <div className="flex gap-2 pt-3 border-t border-gray-100">
           <button
-            onClick={() => {}}
+            onClick={() => {
+              setUpdateModalOpen(true);
+            }}
             className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
           >
             수정
@@ -122,6 +122,15 @@ const MenuCard: React.FC<MenuCardProps> = ({
         purpose={"메뉴"}
         targetName={item!.name}
         isLoading={false}
+      />
+      <MenuFormModal
+        isOpen={updateModalOpen}
+        onClose={() => {
+          setUpdateModalOpen(false);
+        }}
+        onConfirm={() => {}}
+        mode="update"
+        editMenu={item}
       />
     </>
   );
