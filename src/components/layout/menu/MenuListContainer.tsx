@@ -125,9 +125,12 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 // Props 타입 정의
 interface MenuListContainerProps {
   data: MenuItem[];
+  onEdit?: (id: string) => void;
+  onDelete: (id: string) => void;
+  onToggleSoldOut?: (id: string) => void;
 }
 
-const MenuListContainer = ({ data }: MenuListContainerProps) => {
+const MenuListContainer = ({ data, onDelete }: MenuListContainerProps) => {
   // 받은 데이터를 그대로 사용
   const menuItems: MenuItem[] = useMemo(() => {
     return data;
@@ -163,7 +166,7 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete menu:", id);
+    onDelete(id);
   };
 
   const formatPrice = (price: number) => {
@@ -251,7 +254,7 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
                       </Box>
                     </TableCell>
                     <TableCell align="center">
-                      {row.optionCategories.length > 0 ? (
+                      {row?.optionCategories?.length > 0 ? (
                         <Box
                           sx={{
                             mt: 0.5,
@@ -261,7 +264,7 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
                             justifyContent: "center",
                           }}
                         >
-                          {row.optionCategories
+                          {row?.optionCategories
                             .slice(0, 2)
                             .map((option, idx) => (
                               <Chip
@@ -272,7 +275,7 @@ const MenuListContainer = ({ data }: MenuListContainerProps) => {
                                 sx={{ fontSize: "0.75rem", height: 20 }}
                               />
                             ))}
-                          {row.optionCategories.length > 2 && (
+                          {row?.optionCategories?.length > 2 && (
                             <Chip
                               label={`+${row.optionCategories.length - 2}`}
                               size="small"

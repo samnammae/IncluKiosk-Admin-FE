@@ -7,7 +7,7 @@ import { MenuItem } from "@/lib/store/MenuStore";
 interface MenuCardGridProps {
   data: MenuItem[];
   onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onDelete: (id: string) => void;
   onToggleSoldOut?: (id: string) => void;
 }
 

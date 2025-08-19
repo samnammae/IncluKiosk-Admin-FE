@@ -7,6 +7,9 @@ import React, { useState, useMemo } from "react";
 import MenuListContainer from "./MenuListContainer";
 import { useMenuStore } from "@/lib/store/MenuStore";
 import AddMenuModal from "../modal/AddMenuModal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { menuAPI } from "@/lib/api/menu";
+import { useShopStore } from "@/lib/store/shopStore";
 
 const MenuManage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,17 +41,34 @@ const MenuManage = () => {
     );
   }, [currentMenus, searchQuery]);
 
+  const queryClient = useQueryClient();
+  const { choosedShop } = useShopStore();
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => {
+      return menuAPI.deleteMenu(choosedShop!.storeId, id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["menu"] });
+      alert("메뉴 삭제에 성공했습니다.");
+    },
+    onError: (error) => {
+      console.error("❌ 메뉴 삭제 실패:", error);
+      alert("메뉴 삭제에 실패했습니다.");
+    },
+  });
+
   const handleEdit = (id: string) => {
     console.log("Edit menu:", id);
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete menu:", id);
+    deleteMutation.mutate(id);
   };
 
   const handleToggleSoldOut = (id: string) => {
     console.log("Toggle sold out:", id);
   };
+
   console.log("filteredMenusfilteredMenus", filteredMenus);
   return (
     <>
@@ -125,7 +145,14 @@ const MenuManage = () => {
         )}
 
         {/* 리스트 뷰는 여기에 추가 */}
-        {viewMode === "list" && <MenuListContainer data={filteredMenus} />}
+        {viewMode === "list" && (
+          <MenuListContainer
+            data={filteredMenus}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onToggleSoldOut={handleToggleSoldOut}
+          />
+        )}
       </div>
       <AddMenuModal
         isOpen={addModalOpen}
