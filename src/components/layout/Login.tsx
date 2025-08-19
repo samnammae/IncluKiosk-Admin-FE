@@ -1,4 +1,5 @@
 "use client";
+import { useNotification } from "@/hooks/useNotification";
 import { authAPI } from "@/lib/api/auth";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { ChangeEvent, useState } from "react";
@@ -18,7 +19,7 @@ const Login = () => {
       [id]: value,
     });
   };
-
+  const showNotification = useNotification((state) => state.showNotification);
   const handleSubmit = async (
     e:
       | React.MouseEvent<HTMLButtonElement>
@@ -31,9 +32,11 @@ const Login = () => {
       console.log("Login form submitted:", loginForm);
       await authAPI.login(loginForm);
       setIsLoggedIn(true);
+      showNotification("로그인 성공", { severity: "success" });
       closeLoginModal();
     } catch (error) {
       console.error("Login failed:", error);
+      showNotification("로그인 실패", { severity: "error" });
     } finally {
       setIsLoading(false);
     }

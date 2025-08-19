@@ -7,13 +7,15 @@ import { categoryAPI } from "@/lib/api/category";
 import { useShopStore } from "@/lib/store/shopStore";
 import { useMenuStore } from "@/lib/store/MenuStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from "@/hooks/useNotification";
 
 interface CategoryAddProps {
   setIsOpenAdd: (value: boolean) => void;
 }
 
 const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
-  const { lastDisplayOrder, categories } = useMenuStore();
+  const { lastDisplayOrder } = useMenuStore();
+  const showNotification = useNotification((state) => state.showNotification);
   const [addCategory, setAddCategory] = useState({
     name: "",
     displayOrder: lastDisplayOrder + 1,
@@ -53,8 +55,7 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
     },
     onSuccess: (response) => {
       console.log("✅ 카테고리 생성 성공:", response);
-      alert("카테고리 등록이 완료되었습니다.");
-
+      showNotification("카테고리가 등록되었습니다", { severity: "success" });
       queryClient.invalidateQueries({ queryKey: ["category"] });
       setIsOpenAdd(false);
       setAddCategory({ name: "", displayOrder: lastDisplayOrder + 1 });
@@ -62,7 +63,7 @@ const CategoryAdd = ({ setIsOpenAdd }: CategoryAddProps) => {
     },
     onError: (error) => {
       console.error("❌ 카테고리 생성 실패:", error);
-      alert("카테고리 등록에 실패했습니다.");
+      showNotification("카테고리가 실패", { severity: "error" });
     },
   });
 

@@ -5,6 +5,7 @@ import { use, useEffect, useState } from "react";
 import ConfirmModal from "@/components/layout/modal/ConfirmModal";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from "@/hooks/useNotification";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -34,7 +35,7 @@ export default function ShopUpdatePage(props: Props) {
   const queryClient = useQueryClient();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
+  const showNotification = useNotification((state) => state.showNotification);
   // 개별 매장 데이터 조회
   const {
     data: shopResponse,
@@ -51,17 +52,17 @@ export default function ShopUpdatePage(props: Props) {
     mutationFn: (shopId: string) => shopAPI.deleteShop(shopId),
     onSuccess: (response) => {
       if (response.success) {
-        alert("매장이 삭제되었습니다.");
-        // 매장 목록 캐시 무효화
+        showNotification("매장이 삭제되었습니다", { severity: "success" });
+
         queryClient.invalidateQueries({ queryKey: ["shops"] });
         router.push("/dashboard/shop");
       } else {
-        alert("매장 삭제에 실패했습니다.");
+        showNotification("매장 삭제 실패", { severity: "error" });
       }
     },
     onError: (error) => {
       console.error("매장 삭제 실패:", error);
-      alert("매장 삭제 중 오류가 발생했습니다.");
+      showNotification("매장 삭제 오류", { severity: "error" });
     },
   });
 

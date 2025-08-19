@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { menuAPI } from "@/lib/api/menu";
 import { useShopStore } from "@/lib/store/shopStore";
 import MenuFormModal from "../modal/MenuFormModal";
+import { useNotification } from "@/hooks/useNotification";
 
 const MenuManage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +41,7 @@ const MenuManage = () => {
         menu.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [currentMenus, searchQuery]);
-
+  const showNotification = useNotification((state) => state.showNotification);
   const queryClient = useQueryClient();
   const { choosedShop } = useShopStore();
   const deleteMutation = useMutation({
@@ -49,11 +50,11 @@ const MenuManage = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["menu"] });
-      alert("메뉴 삭제에 성공했습니다.");
+      showNotification("메뉴 삭제에 성공했습니다", { severity: "success" });
     },
     onError: (error) => {
       console.error("❌ 메뉴 삭제 실패:", error);
-      alert("메뉴 삭제에 실패했습니다.");
+      showNotification("메뉴 삭제 실패", { severity: "error" });
     },
   });
 
