@@ -52,7 +52,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
         </div>
 
         {/* 메뉴 정보 */}
-        <div className="mb-4">
+        <div className="mb-4 h-20">
           <div className="flex items-start justify-between mb-2">
             <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
               {item.name}
