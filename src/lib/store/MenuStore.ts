@@ -17,22 +17,38 @@ interface CategoryType {
   displayOrder: number; // 카테고리 표시 순서
 }
 
+export interface optionCategoriesType {
+  id: number;
+  name: string;
+  options: OptionItem[];
+  required: boolean;
+  type: "SINGLE" | "MULTIPLE";
+}
+export interface OptionItem {
+  default: boolean;
+  id: number;
+  name: string;
+  price: number;
+}
 interface MenuStore {
   // 데이터
   categories: CategoryType[];
   menus: Record<string, MenuItem[]>; // 카테고리별 메뉴 객체로 변경
   lastDisplayOrder: number; // 카테고리 생성시 맨 뒤 숫자
+  optionCategories: optionCategoriesType[];
 
   // 액션
   setCategories: (categories: CategoryType[]) => void;
   setMenus: (menus: Record<string, MenuItem[]>) => void; // 타입 변경
   clearMenuData: () => void;
+  setOptionCategories: (optionCategories: optionCategoriesType[]) => void;
 }
 
 export const useMenuStore = create<MenuStore>((set, get) => ({
   categories: [],
-  menus: {}, // 빈 객체로 초기화
+  menus: {},
   lastDisplayOrder: 0,
+  optionCategories: [],
 
   setCategories: (categories: CategoryType[]) => {
     const lastOrder =
@@ -48,6 +64,9 @@ export const useMenuStore = create<MenuStore>((set, get) => ({
     set({
       categories: [],
       menus: {},
+      optionCategories: [],
       lastDisplayOrder: 0,
     }),
+  setOptionCategories: (optionCategories: optionCategoriesType[]) =>
+    set({ optionCategories }),
 }));
