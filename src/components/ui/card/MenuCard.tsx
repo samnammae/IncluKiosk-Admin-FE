@@ -1,7 +1,7 @@
 "use client";
 import ConfirmModal from "@/components/layout/modal/ConfirmModal";
 import MenuFormModal from "@/components/layout/modal/MenuFormModal";
-import { MenuItem } from "@/lib/store/MenuStore";
+import { MenuItem, useMenuStore } from "@/lib/store/MenuStore";
 
 import React, { useState } from "react";
 
@@ -24,8 +24,11 @@ const MenuCard: React.FC<MenuCardProps> = ({
     onDelete(item.id);
     setDeleteModalOpen(false);
   };
-
-  console.log("옵션 카테고리", item);
+  const { optionCategories: optionData } = useMenuStore();
+  const findOptionName = (id: string) => {
+    const result = optionData.find((ele) => ele.id === Number(id));
+    return result?.name || null;
+  };
   return (
     <>
       <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 hover:transform hover:-translate-y-1">
@@ -54,7 +57,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
         </div>
 
         {/* 메뉴 정보 */}
-        <div className="mb-4 h-20">
+        <div className="mb-8 h-20">
           <div className="flex items-start justify-between mb-2">
             <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
               {item.name}
@@ -64,20 +67,20 @@ const MenuCard: React.FC<MenuCardProps> = ({
             </span>
           </div>
 
-          <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+          <p className="text-sm text-gray-600 line-clamp-2 mb-5 whitespace-nowrap overflow-hidden text-ellipsis">
             {item.description}
           </p>
 
           {/* 옵션 카테고리 */}
           {item?.optionCategoryIds?.length > 0 ? (
             <div className="mb-3">
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-nowrap gap-2 overflow-x-auto">
                 {item.optionCategoryIds.map((option, index) => (
                   <span
                     key={index}
-                    className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-xs"
+                    className="flex-shrink-0  inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-xs"
                   >
-                    {option}
+                    {findOptionName(option)}
                   </span>
                 ))}
               </div>
