@@ -12,6 +12,18 @@ export const optionAPI = {
     console.log("옵션 생성", response.data);
     return response.data;
   },
+  editOptios: async (
+    storeId: number,
+    optionCategoryId: number,
+    data: OptionGroupFormData
+  ) => {
+    const response = await api.put(
+      `menu/${storeId}/option/${optionCategoryId}`,
+      data
+    );
+    console.log("옵션 수정", response.data);
+    return response.data;
+  },
   deleteOptionCategory: async (storeId: number, optionCategoryId: number) => {
     const response = await api.delete(
       `/menu/${storeId}/option/${optionCategoryId}`
