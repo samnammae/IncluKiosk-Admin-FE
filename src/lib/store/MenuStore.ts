@@ -42,6 +42,7 @@ interface MenuStore {
   setMenus: (menus: Record<string, MenuItem[]>) => void; // 타입 변경
   clearMenuData: () => void;
   setOptionCategories: (optionCategories: optionCategoriesType[]) => void;
+  updateCategories: (updatedCategories: CategoryType[]) => void; //카테고리 드래그 드롭 순서 변경
 }
 
 export const useMenuStore = create<MenuStore>((set, get) => ({
@@ -69,4 +70,15 @@ export const useMenuStore = create<MenuStore>((set, get) => ({
     }),
   setOptionCategories: (optionCategories: optionCategoriesType[]) =>
     set({ optionCategories }),
+  updateCategories: (updatedCategories: CategoryType[]) => {
+    const lastOrder =
+      updatedCategories.length > 0
+        ? Math.max(...updatedCategories.map((cat) => cat.displayOrder))
+        : 0;
+
+    set({
+      categories: updatedCategories,
+      lastDisplayOrder: lastOrder,
+    });
+  },
 }));
