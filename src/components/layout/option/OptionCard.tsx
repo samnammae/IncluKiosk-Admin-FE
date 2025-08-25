@@ -4,11 +4,11 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { error } from "console";
 import { optionAPI } from "@/lib/api/option";
 import { useNotification } from "@/hooks/useNotification";
 import { useShopStore } from "@/lib/store/shopStore";
 import ConfirmModal from "../modal/ConfirmModal";
+import OptionFormModal, { OptionGroupFormData } from "../modal/OptionFormModal";
 
 interface OptionCardProps {
   optionItem: optionCategoriesType;
@@ -19,6 +19,7 @@ const OptionCard: React.FC<OptionCardProps> = ({ optionItem }) => {
   const { choosedShop } = useShopStore();
   const queryClient = useQueryClient();
   const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [isEditModal, setIsEditModal] = useState(false);
 
   const deleteCategoriesMutation = useMutation({
     mutationFn: ({
@@ -39,12 +40,47 @@ const OptionCard: React.FC<OptionCardProps> = ({ optionItem }) => {
       showNotification("옵션그룹 삭제 실패", { severity: "error" });
     },
   });
+  const updateCategoriesMutation = useMutation({
+    mutationFn: ({
+      storeId,
+      optionCategoryId,
+      data,
+    }: {
+      storeId: number;
+      optionCategoryId: number;
+      data: OptionGroupFormData;
+    }) => optionAPI.editOptios(storeId, optionCategoryId, data),
+    onSuccess: () => {
+      console.log("옵션 카테고리 수정 성공");
+      showNotification("옵션그룹 수정 성공", { severity: "success" });
+      queryClient.invalidateQueries({ queryKey: ["option"] });
+      setIsEditModal(false);
+    },
+    onError: (error) => {
+      console.log("옵션 카테고리 수정 오류", error);
+      showNotification("옵션그룹 수정 실패", { severity: "error" });
+    },
+  });
+
   const handleCategoiesDelete = () => {
     deleteCategoriesMutation.mutate({
       storeId: choosedShop!.storeId,
       optionCategoryId: optionItem.id,
     });
   };
+
+  const handleEditSubmit = (data: OptionGroupFormData) => {
+    const dataWithoutIds = {
+      ...data,
+      options: data.options.map(({ id, ...option }) => option),
+    };
+    updateCategoriesMutation.mutate({
+      storeId: choosedShop!.storeId,
+      optionCategoryId: optionItem.id,
+      data: dataWithoutIds,
+    });
+  };
+
   return (
     <>
       <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow w-100">
@@ -79,6 +115,7 @@ const OptionCard: React.FC<OptionCardProps> = ({ optionItem }) => {
               size="medium"
               onClick={(e) => {
                 e.stopPropagation();
+                setIsEditModal(true);
               }}
               sx={{ color: "primary.main" }}
             >
@@ -141,6 +178,13 @@ const OptionCard: React.FC<OptionCardProps> = ({ optionItem }) => {
         purpose={"옵션 그룹"}
         targetName={optionItem!.name}
         isLoading={deleteCategoriesMutation.isPending}
+      />
+      <OptionFormModal
+        isOpen={isEditModal}
+        onClose={() => setIsEditModal(false)}
+        onSubmit={handleEditSubmit}
+        editData={optionItem}
+        isLoading={updateCategoriesMutation.isPending}
       />
     </>
   );
