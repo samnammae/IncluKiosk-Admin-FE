@@ -8,11 +8,11 @@ export default function Sidebar() {
 
   const menuItems = [
     { href: "/dashboard", label: "대시보드" },
-    { href: "/dashboard/menu", label: "메뉴 관리" },
     { href: "/dashboard/shop", label: "매장 관리" },
+    { href: "/dashboard/menu", label: "메뉴 관리" },
+    { href: "/dashboard/option", label: "옵션 관리" },
     { href: "/dashboard/orders", label: "주문 관리" },
-    { href: "/dashboard/statistics", label: "매출 통계" },
-    { href: "/dashboard/settings", label: "설정" },
+    // { href: "/dashboard/settings", label: "설정" },
   ];
 
   return (

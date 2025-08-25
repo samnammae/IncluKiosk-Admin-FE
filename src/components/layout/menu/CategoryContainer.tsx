@@ -2,6 +2,10 @@ import React, { useRef, useState } from "react";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 import CategoryUpdateModal from "./CategoryUpdateModal";
 import { useMenuStore } from "@/lib/store/MenuStore";
+import { useMutation } from "@tanstack/react-query";
+import { useNotification } from "@/hooks/useNotification";
+import { categoryAPI, updateCategoryData } from "@/lib/api/category";
+import { useShopStore } from "@/lib/store/shopStore";
 
 export interface CategoryItem {
   id: string;
@@ -18,8 +22,28 @@ const CategoryContainer = () => {
     null
   );
 
-  const { categories } = useMenuStore();
-
+  const { categories, updateCategories } = useMenuStore();
+  const { choosedShop } = useShopStore();
+  const showNotification = useNotification((state) => state.showNotification);
+  const updateMutation = useMutation({
+    mutationFn: ({
+      shopId,
+      data,
+    }: {
+      shopId: number;
+      data: updateCategoryData[];
+    }) => {
+      return categoryAPI.updateCategory(shopId, data);
+    },
+    onSuccess: () => {
+      console.log("카테고리 드래그드롭 순서수정 성공");
+      showNotification("카테고리 순서 변경", { severity: "success" });
+    },
+    onError: (error) => {
+      console.log("카테고리 드래그드롭 순서수정 실패", error);
+      showNotification("카테고리 순서 변경 실패", { severity: "error" });
+    },
+  });
   // 드래그 시작
   const dragStart = (e: React.DragEvent<HTMLDivElement>, position: number) => {
     dragItem.current = position;
@@ -47,6 +71,13 @@ const CategoryContainer = () => {
 
     if (dragItem.current === null || dragOverItem.current === null) return;
 
+    // 동일한 위치면 API 호출 안함
+    if (dragItem.current === dragOverItem.current) {
+      dragItem.current = null;
+      dragOverItem.current = null;
+      return;
+    }
+
     const newCategories = [...categories];
     const dragItemValue = newCategories[dragItem.current];
     newCategories.splice(dragItem.current, 1);
@@ -57,6 +88,15 @@ const CategoryContainer = () => {
       ...category,
       displayOrder: index + 1,
     }));
+
+    updateCategories(updatedCategories);
+
+    if (choosedShop) {
+      updateMutation.mutate({
+        shopId: choosedShop.storeId,
+        data: updatedCategories,
+      });
+    }
 
     dragItem.current = null;
     dragOverItem.current = null;

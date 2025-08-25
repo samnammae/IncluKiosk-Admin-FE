@@ -17,7 +17,7 @@ import {
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { visuallyHidden } from "@mui/utils";
 import EmptyMenu from "./EmptyMenu";
-import { MenuItem } from "@/lib/store/MenuStore";
+import { MenuItem, useMenuStore } from "@/lib/store/MenuStore";
 import MenuFormModal from "../modal/MenuFormModal";
 
 interface HeadCell {
@@ -35,7 +35,7 @@ const headCells: readonly HeadCell[] = [
     label: "가격",
   },
   {
-    id: "optionCategories",
+    id: "optionCategoryIds",
     label: "옵션",
   },
   {
@@ -187,7 +187,11 @@ const MenuListContainer = ({ data, onDelete }: MenuListContainerProps) => {
   );
   const emptyRows =
     visibleRows.length < rowsPerPage ? rowsPerPage - visibleRows.length : 0;
-
+  const { optionCategories: optionData } = useMenuStore();
+  const findOptionName = (id: string) => {
+    const result = optionData.find((ele) => ele.id === Number(id));
+    return result?.name || null;
+  };
   if (data.length === 0) {
     return <EmptyMenu />;
   }
@@ -219,13 +223,14 @@ const MenuListContainer = ({ data, onDelete }: MenuListContainerProps) => {
                       key={row.id}
                       sx={{ cursor: "pointer" }}
                     >
-                      <TableCell component="th" id={labelId} align="center">
+                      <TableCell component="th" id={labelId} align="left">
                         <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
                             gap: 2,
-                            justifyContent: "center",
+                            justifyContent: "left",
+                            marginLeft: "30px",
                           }}
                         >
                           <Avatar
@@ -260,7 +265,7 @@ const MenuListContainer = ({ data, onDelete }: MenuListContainerProps) => {
                         </Box>
                       </TableCell>
                       <TableCell align="center">
-                        {row?.optionCategories?.length > 0 ? (
+                        {row?.optionCategoryIds?.length > 0 ? (
                           <Box
                             sx={{
                               mt: 0.5,
@@ -270,20 +275,20 @@ const MenuListContainer = ({ data, onDelete }: MenuListContainerProps) => {
                               justifyContent: "center",
                             }}
                           >
-                            {row?.optionCategories
+                            {row?.optionCategoryIds
                               .slice(0, 2)
                               .map((option, idx) => (
                                 <Chip
                                   key={idx}
-                                  label={option}
+                                  label={findOptionName(option)}
                                   size="small"
                                   variant="outlined"
                                   sx={{ fontSize: "0.75rem", height: 20 }}
                                 />
                               ))}
-                            {row?.optionCategories?.length > 2 && (
+                            {row?.optionCategoryIds?.length > 2 && (
                               <Chip
-                                label={`+${row.optionCategories.length - 2}`}
+                                label={`+${row.optionCategoryIds.length - 2}`}
                                 size="small"
                                 variant="outlined"
                                 sx={{ fontSize: "0.75rem", height: 20 }}

@@ -29,7 +29,7 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
     price: "",
     description: "",
     category: "",
-    optionCategories: [] as string[],
+    optionCategories: [] as string[], // 이름 배열로 유지
     isSoldOut: false,
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -37,10 +37,7 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
   const [isDragOver, setIsDragOver] = useState(false);
 
   const { choosedShop } = useShopStore();
-  const { categories } = useMenuStore();
-
-  // 옵션 카테고리 임의 목록
-  const availableOptions = ["사이즈", "온도", "시럽", "토핑"];
+  const { categories, optionCategories: optionData } = useMenuStore();
 
   // 수정 모드일 때 기존 데이터로 폼 초기화
   useEffect(() => {
@@ -50,7 +47,7 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
         price: editMenu.price.toString(),
         description: editMenu.description,
         category: editMenu.categoryId || "",
-        optionCategories: editMenu.optionCategories,
+        optionCategories: editMenu.optionCategoryIds || [], // 기존 이름 배열 그대로 사용
         isSoldOut: editMenu.isSoldOut,
       });
 
@@ -63,13 +60,7 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
       handleReset();
     }
   }, [mode, editMenu, isOpen]);
-  useEffect(() => {
-    console.log(menuData);
-    console.log(menuData);
-    console.log(menuData);
-    console.log(menuData);
-    console.log(menuData);
-  }, [menuData]);
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -123,14 +114,15 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
     setImagePreview(null);
   };
 
-  const handleOptionToggle = (option: string) => {
+  const handleOptionToggle = (optionName: string) => {
     setMenuData((prev) => ({
       ...prev,
-      optionCategories: prev.optionCategories.includes(option)
-        ? prev.optionCategories.filter((opt) => opt !== option)
-        : [...prev.optionCategories, option],
+      optionCategories: prev.optionCategories.includes(optionName)
+        ? prev.optionCategories.filter((opt) => opt !== optionName)
+        : [...prev.optionCategories, optionName],
     }));
   };
+
   const showNotification = useNotification((state) => state.showNotification);
 
   // 생성 mutation
@@ -172,13 +164,21 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
   const handleSubmit = () => {
     const formData = new FormData();
 
+    // 이름 배열을 ID 배열로 변환
+    const optionCategoryIds = menuData.optionCategories
+      .map((optionName) => {
+        const option = optionData.find((opt) => opt.name === optionName);
+        return option?.id;
+      })
+      .filter((id) => id !== undefined);
+
     // JSON 데이터
     const requestData = {
       name: menuData.name,
       price: Number(menuData.price),
       description: menuData.description,
-      categoryId: menuData.category,
-      optionCategories: menuData.optionCategories,
+      categoryId: Number(menuData.category),
+      optionCategoryIds: JSON.stringify(optionCategoryIds), // ID 배열을 JSON 문자열로
       isSoldOut: menuData.isSoldOut,
     };
 
@@ -232,8 +232,14 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-2xl w-full">
+    <div
+      className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+      onClick={handleClose}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-2xl w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="max-h-[90vh] overflow-y-auto scrollbar-hide">
           <div className="p-6">
             {/* 닫기 버튼 */}
@@ -410,21 +416,25 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
                   적용 가능한 옵션
                 </label>
                 <div className="grid grid-cols-2 gap-2">
-                  {availableOptions.map((option) => (
+                  {optionData.map((option) => (
                     <label
-                      key={option}
+                      key={option.id}
                       className={`flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer ${
                         isLoading ? "pointer-events-none opacity-50" : ""
                       }`}
                     >
                       <input
                         type="checkbox"
-                        checked={menuData?.optionCategories?.includes(option)}
-                        onChange={() => handleOptionToggle(option)}
+                        checked={menuData?.optionCategories?.includes(
+                          option.name
+                        )}
+                        onChange={() => handleOptionToggle(option.name)}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         disabled={isLoading}
                       />
-                      <span className="text-sm text-gray-700">{option}</span>
+                      <span className="text-sm text-gray-700">
+                        {option.name}
+                      </span>
                     </label>
                   ))}
                 </div>
