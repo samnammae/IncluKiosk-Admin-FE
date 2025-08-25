@@ -143,8 +143,9 @@ const OptionFormModal: React.FC<OptionFormModalProps> = ({
   const updateOption = (
     index: number,
     field: keyof OptionFormData,
-    value: any
+    value: string | boolean | number
   ) => {
+    console.log(value);
     setFormData((prev) => ({
       ...prev,
       options: prev.options.map((opt, i) =>
