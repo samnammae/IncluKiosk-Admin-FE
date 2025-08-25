@@ -36,7 +36,7 @@ export interface OptionGroupFormData {
   options: OptionFormData[];
 }
 
-interface OptionFormData {
+export interface OptionFormData {
   id?: number;
   name: string;
   price: number;
