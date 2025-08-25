@@ -8,7 +8,7 @@ export const optionAPI = {
     return response.data;
   },
   addOptions: async (storeId: number, data: OptionGroupFormData) => {
-    const response = await api.post(`menu/${storeId}/option`, data);
+    const response = await api.post(`/menu/${storeId}/option`, data);
     console.log("옵션 생성", response.data);
     return response.data;
   },
@@ -18,7 +18,7 @@ export const optionAPI = {
     data: OptionGroupFormData
   ) => {
     const response = await api.put(
-      `menu/${storeId}/option/${optionCategoryId}`,
+      `/menu/${storeId}/option/${optionCategoryId}`,
       data
     );
     console.log("옵션 수정", response.data);
