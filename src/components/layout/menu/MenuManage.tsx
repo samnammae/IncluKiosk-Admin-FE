@@ -105,7 +105,7 @@ const MenuManage = () => {
       price: currentMenu.price,
       description: currentMenu.description,
       categoryId: categoryId || "",
-      optionCategories: currentMenu.optionCategories || [],
+      optionCategories: currentMenu.optionCategoryIds || [],
       isSoldOut: newSoldOutStatus, // 토글된 상태
     };
     console.log("품절처리", requestData);

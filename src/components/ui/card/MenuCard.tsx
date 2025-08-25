@@ -24,6 +24,8 @@ const MenuCard: React.FC<MenuCardProps> = ({
     onDelete(item.id);
     setDeleteModalOpen(false);
   };
+
+  console.log("옵션 카테고리", item);
   return (
     <>
       <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 hover:transform hover:-translate-y-1">
@@ -67,10 +69,10 @@ const MenuCard: React.FC<MenuCardProps> = ({
           </p>
 
           {/* 옵션 카테고리 */}
-          {item?.optionCategories?.length > 0 ? (
+          {item?.optionCategoryIds?.length > 0 ? (
             <div className="mb-3">
               <div className="flex flex-wrap gap-1">
-                {item.optionCategories.map((option, index) => (
+                {item.optionCategoryIds.map((option, index) => (
                   <span
                     key={index}
                     className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-md text-xs"

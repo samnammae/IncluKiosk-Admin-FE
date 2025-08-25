@@ -6,7 +6,7 @@ export interface MenuItem {
   price: number; // 메뉴 기본 가격
   description: string; // 메뉴 설명
   imageUrl: string; // 메뉴 이미지 URL
-  optionCategories: string[]; // 적용 가능한 옵션명 종류
+  optionCategoryIds: string[]; // 적용 가능한 옵션명 종류
   isSoldOut: boolean; // 품절 여부
   categoryId?: string;
 }
