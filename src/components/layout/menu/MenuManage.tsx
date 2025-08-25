@@ -57,15 +57,70 @@ const MenuManage = () => {
       showNotification("메뉴 삭제 실패", { severity: "error" });
     },
   });
-
+  //수정 mutation
+  const toggleSoldOutMutation = useMutation({
+    mutationFn: ({ id, formData }: { id: string; formData: FormData }) => {
+      console.log("mutation 직전 결과", choosedShop!.storeId, id, formData);
+      return menuAPI.updateMenu(choosedShop!.storeId, id, formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["menu"] });
+      showNotification("메뉴 품절처리 변경", { severity: "success" });
+    },
+    onError: (error) => {
+      console.error("❌ 메뉴 품절처리 변경 실패:", error);
+      showNotification("메뉴 품절처리 변경 실패", { severity: "error" });
+    },
+  });
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
   };
 
-  const handleToggleSoldOut = (id: string) => {
-    console.log("Toggle sold out:", id);
+  //메뉴 수정을 위한 카테고리id 찾기 함수
+  const findCategoryId = (menuId: string) => {
+    const includCategoryName = Object.entries(menus).find(([category, items]) =>
+      items.some((item) => item.id === menuId)
+    );
+    const targetCategoriesId = categories.find(
+      (ele) => ele.name === includCategoryName?.[0]
+    );
+    return targetCategoriesId?.id || null;
   };
 
+  const handleToggleSoldOut = (id: string) => {
+    // 현재 메뉴 찾기
+    const currentMenu = filteredMenus.find((menu) => menu.id === id);
+    if (!currentMenu) return;
+    const categoryId = findCategoryId(id);
+
+    const newSoldOutStatus = !currentMenu.isSoldOut;
+    console.log("품절처리 핸들 함수 과정", currentMenu);
+    console.log("품절처리 핸들 함수 과정 카테고리 id", categoryId);
+
+    const formData = new FormData();
+
+    // JSON 데이터 (기존 정보 + 변경된 soldOut 상태)
+    const requestData = {
+      name: currentMenu.name,
+      price: currentMenu.price,
+      description: currentMenu.description,
+      categoryId: categoryId || "",
+      optionCategories: currentMenu.optionCategories || [],
+      isSoldOut: newSoldOutStatus, // 토글된 상태
+    };
+    console.log("품절처리", requestData);
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(requestData)], {
+        type: "application/json",
+      })
+    );
+
+    toggleSoldOutMutation.mutate({
+      id: id,
+      formData: formData,
+    });
+  };
   console.log("filteredMenusfilteredMenus", filteredMenus);
   return (
     <>
