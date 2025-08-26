@@ -25,11 +25,7 @@ const ShopCard: React.FC<StoreCardProps> = ({
       {/* 이미지 영역 */}
       <div className="w-full flex-[2] bg-gray-200 flex items-center justify-center">
         {image ? (
-          <img
-            src={`${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${image}`}
-            alt={name}
-            className="w-full h-full object-cover"
-          />
+          <img src={image} alt={name} className="w-full h-full object-cover" />
         ) : (
           <span className="text-gray-400 text-sm">이미지 없음</span>
         )}

@@ -119,17 +119,13 @@ export default function ShopForm({
       subColor: data.theme?.subColor || "#0051A3",
       textColor: data.theme?.textColor || "#F8F9FA",
     });
-
+    console.log("datadatadata", data);
     // 기존 이미지 미리보기 설정
     setPreviews({
-      mainImg: data.mainImg
-        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${data.mainImg}`
-        : "",
-      logoImg: data.startPage?.logoImg
-        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${data.startPage.logoImg}`
-        : "",
+      mainImg: data.mainImg ? data.mainImg : "",
+      logoImg: data.startPage?.logoImg ? data.startPage.logoImg : "",
       startBackground: data.startPage?.startBackground
-        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${data.startPage.startBackground}`
+        ? data.startPage.startBackground
         : "",
     });
   };

@@ -9,7 +9,7 @@ const ShopListItem: React.FC<ShopListItemProps> = ({ shop }) => (
     <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
       {shop.mainImg ? (
         <img
-          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${shop.mainImg}`}
+          src={shop.mainImg}
           alt={shop.name}
           className="w-full h-full object-cover"
         />
