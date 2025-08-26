@@ -21,7 +21,7 @@ export const shopAPI = {
     return response.data;
   },
   updateShop: async (shopId: string, formData: FormData) => {
-    const response = await api.post(`/admin/store/${shopId}`, formData, {
+    const response = await api.put(`/admin/store/${shopId}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
