@@ -122,7 +122,7 @@ const CategoryChart = () => {
       // 중앙 좌표
       const centerX = width / 2;
       const centerY = height / 2;
-      const titleText = viewType === "amount" ? "총 주문금액" : "총 주문건수";
+      const titleText = viewType === "amount" ? "총 매출액" : "총 상품수량";
       const subText =
         viewType === "amount"
           ? `${total.toLocaleString()}원`

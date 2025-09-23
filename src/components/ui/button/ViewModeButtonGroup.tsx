@@ -5,9 +5,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 const ViewModeButtonGroup = ({
   viewType,
   handleChange,
+  isExtend,
 }: {
   viewType: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isExtend?: boolean;
 }) => {
   return (
     <RadioGroup
@@ -19,13 +21,20 @@ const ViewModeButtonGroup = ({
       <FormControlLabel
         value="amount"
         control={<Radio size="small" />}
-        label="주문 금액"
+        label="매출액"
       />
       <FormControlLabel
         value="items"
         control={<Radio size="small" />}
-        label="주문 건수"
+        label="판매 수량"
       />
+      {isExtend && (
+        <FormControlLabel
+          value="counts"
+          control={<Radio size="small" />}
+          label="주문건수"
+        />
+      )}
     </RadioGroup>
   );
 };
