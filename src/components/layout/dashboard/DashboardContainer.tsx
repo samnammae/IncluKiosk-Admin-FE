@@ -5,6 +5,7 @@ import CategoryChart from "./CategoryChart";
 import { useRouter } from "next/navigation";
 import HourlyChart from "./HourlyChart";
 import PeriodChart from "./PeriodChart";
+import RecentMinitable from "./RecentMinitable";
 
 const DashboardContainer = () => {
   const router = useRouter();
@@ -27,13 +28,14 @@ const DashboardContainer = () => {
       </div>
       <div className="bg-white shadow-sm rounded-xl p-6">
         <SectionTitle
-          title={"📋 최근 주문 기록"}
+          title={"📋 최근 주문내역"}
           buttonText="전체 보기    >"
           buttonClassName="px-2 py-1 text-sm"
           buttonClick={() => {
-            router.push("/dashboard/shop");
+            router.push("/dashboard/orders");
           }}
         />
+        <RecentMinitable />
       </div>
     </div>
   );

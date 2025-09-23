@@ -58,7 +58,7 @@ export const dashboardAPI = {
     return response.data;
   },
 
-  getRecent: async (storeId: number, page = 0, size = 20) => {
+  getRecent: async (storeId: number, page = 1, size = 20) => {
     const response = await nextApi.get(`/dashboard/recent`, {
       params: { storeId, page, size },
     });
