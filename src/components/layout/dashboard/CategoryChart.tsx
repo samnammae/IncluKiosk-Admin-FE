@@ -48,11 +48,6 @@ const CategoryChart = () => {
     enabled: !!choosedShop,
   });
 
-  console.log(data);
-  console.log(data);
-  console.log(data);
-  console.log(data);
-  console.log(data);
   const periodMap: Record<string, keyof CategoryResponse["data"]> = {
     오늘: "today",
     이번주: "week",
