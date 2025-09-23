@@ -90,7 +90,7 @@ const HourlyChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
+        position: "bottom" as const,
       },
 
       datalabels: {
