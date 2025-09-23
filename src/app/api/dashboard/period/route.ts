@@ -7,15 +7,15 @@ type Order = {
   createdAt: string;
 };
 
-export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ unit: string }> }
-) {
-  const { unit } = await context.params; // daily | weekly | monthly
+export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
+  const unit = searchParams.get("unit") || "daily";
   const storeId = searchParams.get("storeId");
-  const limit = parseInt(searchParams.get("limit") || "7", 10); // 기본 7개
+  const limit = parseInt(searchParams.get("limit") || "7", 10);
+
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
 
   if (!storeId) {
     return NextResponse.json(
@@ -39,7 +39,17 @@ export async function GET(
   );
 
   const springData = await springRes.json();
-  const orders: Order[] = springData.data;
+  let orders: Order[] = springData.data;
+
+  // 기간 필터링 (startDate & endDate 있을 때만)
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    orders = orders.filter((o) => {
+      const d = new Date(o.createdAt);
+      return d >= start && d <= end;
+    });
+  }
 
   // 그룹핑 키 생성 함수
   const groupKey = (date: Date) => {
@@ -78,8 +88,13 @@ export async function GET(
     grouped[key].orderCount += 1;
   });
 
-  // 최신순 정렬
-  const labels = Object.keys(grouped).sort().slice(-limit);
+  // 정렬된 labels
+  let labels = Object.keys(grouped).sort();
+
+  // 기간 조회가 없을 때만 limit 적용
+  if (!(startDate && endDate)) {
+    labels = labels.slice(-limit);
+  }
 
   const result = {
     success: true,
