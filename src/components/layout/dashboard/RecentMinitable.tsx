@@ -25,6 +25,8 @@ interface Order {
   updatedAt: string;
   items: MenuItem[];
 }
+type ChipColor = "default" | "error" | "success" | "warning";
+
 // 주문 상태 색상 매핑
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -165,7 +167,7 @@ const RecentMinitable = () => {
                 <TableCell align="center">
                   <Chip
                     label={getStatusText(order.status)}
-                    color={getStatusColor(order.status) as any}
+                    color={getStatusColor(order.status)}
                     size="small"
                   />
                 </TableCell>

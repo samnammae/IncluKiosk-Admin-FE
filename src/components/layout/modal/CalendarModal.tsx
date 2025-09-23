@@ -4,8 +4,8 @@ import Calendar from "react-calendar";
 
 import "./Calendar.css";
 interface CalendarProps {
-  setDate: any;
-  date: any;
+  setDate: () => void;
+  date: Date;
   onClose: () => void;
 }
 

@@ -11,6 +11,9 @@ import { dashboardAPI } from "@/lib/api/dashboard";
 import { useShopStore } from "@/lib/store/shopStore";
 import { useQuery } from "@tanstack/react-query";
 
+import type { Chart } from "chart.js";
+import { Context } from "chartjs-plugin-datalabels";
+
 interface CategoryResponse {
   success: boolean;
   code: number;
@@ -98,9 +101,9 @@ const CategoryChart = () => {
           weight: "bold" as const,
           size: 12,
         },
-        formatter: (value: number, context: any) => {
-          const label = context.chart.data.labels[context.dataIndex];
-          return `${label}`;
+        formatter: (value: number, context: Context) => {
+          const labels = context.chart.data.labels as string[];
+          return labels[context.dataIndex];
         },
       },
     },
@@ -110,7 +113,7 @@ const CategoryChart = () => {
   //중앙 텍스트
   const centerTextPlugin = {
     id: "centerText",
-    beforeDraw: (chart: any) => {
+    beforeDraw: (chart: Chart) => {
       const { width, height, ctx } = chart;
       ctx.save();
 

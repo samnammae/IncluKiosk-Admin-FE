@@ -11,7 +11,16 @@ type Order = {
   createdAt: string;
   items: OrderItem[];
 };
-
+interface Menu {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+  optionCategoryIds: number[];
+  isSoldOut: boolean;
+}
+type MenusByCategory = Record<string, Menu[]>;
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const storeId = searchParams.get("storeId");
@@ -75,10 +84,13 @@ export async function GET(req: NextRequest) {
   const springData = await springRes.json();
   const categoryData = await categoryRes.json();
 
+  console.log(categoryData);
+  console.log(categoryData.data.menusByCategory);
   const orders: Order[] = springData.data;
   const categories: string[] = categoryData.data.categories;
-  const menusByCategory: Record<string, any[]> =
-    categoryData.data.menusByCategory;
+  const menusByCategory: MenusByCategory = categoryData.data.menusByCategory;
+
+  //g한글로 변환
   const toKST = (date: Date) =>
     new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
 
@@ -104,7 +116,7 @@ export async function GET(req: NextRequest) {
         let foundCategory: string | null = null;
 
         for (const [cat, menus] of Object.entries(menusByCategory)) {
-          if ((menus as any[]).some((m) => m.id === item.menuId)) {
+          if (menus.some((m) => m.id === Number(item.menuId))) {
             foundCategory = cat;
             break;
           }
