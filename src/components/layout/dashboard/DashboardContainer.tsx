@@ -4,6 +4,7 @@ import React from "react";
 import CategoryChart from "./CategoryChart";
 import { useRouter } from "next/navigation";
 import HourlyChart from "./HourlyChart";
+import PeriodChart from "./PeriodChart";
 
 const DashboardContainer = () => {
   const router = useRouter();
@@ -12,6 +13,7 @@ const DashboardContainer = () => {
     <div className="max-w-8xl mx-auto p-2 space-y-6">
       <div className="bg-white shadow-sm rounded-xl p-6">
         <SectionTitle title={"🧾 기간별 매출"} />
+        <PeriodChart />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-white shadow-sm rounded-xl p-6 lg:col-span-2">
