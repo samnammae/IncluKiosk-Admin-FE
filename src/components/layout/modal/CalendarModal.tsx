@@ -3,9 +3,10 @@ import "react-calendar/dist/Calendar.css";
 import Calendar from "react-calendar";
 
 import "./Calendar.css";
+import { DateRange } from "../dashboard/PeriodChart";
 interface CalendarProps {
-  setDate: () => void;
-  date: Date;
+  setDate: React.Dispatch<React.SetStateAction<DateRange>>;
+  date: DateRange;
   onClose: () => void;
 }
 
@@ -18,7 +19,11 @@ const CalendarModal: React.FC<CalendarProps> = ({ setDate, date, onClose }) => {
       ></div>
       <div className="absolute right-1 top-full mt-2 z-20">
         <div className="calendar-container">
-          <Calendar onChange={setDate} value={date} selectRange={true} />
+          <Calendar
+            onChange={(value) => setDate(value as DateRange)}
+            value={date}
+            selectRange={true}
+          />
         </div>
       </div>
     </>

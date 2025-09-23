@@ -29,7 +29,7 @@ ChartJS.register(
   Legend
 );
 
-type DateRange = [Date, Date] | Date;
+export type DateRange = [Date, Date] | Date;
 
 const PeriodChart = () => {
   const { choosedShop } = useShopStore(); //매장 id
