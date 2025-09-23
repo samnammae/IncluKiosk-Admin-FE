@@ -12,7 +12,6 @@ export default function Sidebar() {
     { href: "/dashboard/menu", label: "메뉴 관리" },
     { href: "/dashboard/option", label: "옵션 관리" },
     { href: "/dashboard/orders", label: "주문 관리" },
-    // { href: "/dashboard/settings", label: "설정" },
   ];
 
   return (
