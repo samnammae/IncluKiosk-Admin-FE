@@ -18,7 +18,7 @@ nextApi.interceptors.request.use((config) => {
 });
 
 export const dashboardAPI = {
-  getCategory: async (storeId: number, type: "amount" | "count") => {
+  getCategory: async (storeId: number, type: "amount" | "items") => {
     const response = await nextApi.get(`/dashboard/category`, {
       params: { storeId, type },
     });
@@ -36,11 +36,24 @@ export const dashboardAPI = {
 
   getPeriod: async (
     storeId: number,
-    unit: "day" | "week" | "month" = "day"
+    options?: {
+      unit?: "daily" | "weekly" | "monthly";
+      limit?: number;
+      startDate?: string; // "YYYY-MM-DD"
+      endDate?: string; // "YYYY-MM-DD"
+    }
   ) => {
-    const response = await nextApi.get(`/dashboard/period/${unit}`, {
-      params: { storeId },
+    const { unit = "daily", limit, startDate, endDate } = options || {};
+
+    const response = await nextApi.get(`/dashboard/period`, {
+      params: {
+        storeId,
+        unit,
+        ...(limit ? { limit } : {}),
+        ...(startDate && endDate ? { startDate, endDate } : {}),
+      },
     });
+
     console.log("기간별 조회", response);
     return response.data;
   },

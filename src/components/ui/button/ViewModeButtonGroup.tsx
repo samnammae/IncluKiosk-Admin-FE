@@ -22,7 +22,7 @@ const ViewModeButtonGroup = ({
         label="주문 금액"
       />
       <FormControlLabel
-        value="count"
+        value="items"
         control={<Radio size="small" />}
         label="주문 건수"
       />

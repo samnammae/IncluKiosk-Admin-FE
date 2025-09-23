@@ -40,7 +40,7 @@ const palette = [
 
 const CategoryChart = () => {
   const { choosedShop } = useShopStore();
-  const [viewType, setViewType] = useState<"amount" | "count">("amount");
+  const [viewType, setViewType] = useState<"amount" | "items">("amount");
   const [viewPeriod, setViewPeriod] = useState("오늘");
   const { data, isLoading, isError } = useQuery<CategoryResponse>({
     queryKey: ["dashboard_category", choosedShop?.storeId, viewType],
@@ -73,7 +73,7 @@ const CategoryChart = () => {
     setViewPeriod(event.target.value);
   };
   const handleViewChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setViewType(event.target.value as "amount" | "count");
+    setViewType(event.target.value as "amount" | "items");
   };
   const chartData = {
     labels,
