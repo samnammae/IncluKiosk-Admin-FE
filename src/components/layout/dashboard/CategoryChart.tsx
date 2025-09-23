@@ -7,32 +7,23 @@ import { useState } from "react";
 import ListButton from "@/components/ui/button/ListButton";
 import { SelectChangeEvent } from "@mui/material";
 import ViewModeButtonGroup from "@/components/ui/button/ViewModeButtonGroup";
+import { dashboardAPI } from "@/lib/api/dashboard";
+import { useShopStore } from "@/lib/store/shopStore";
+import { useQuery } from "@tanstack/react-query";
+
+interface CategoryResponse {
+  success: boolean;
+  code: number;
+  message: string;
+  data: {
+    today: { labels: string[]; values: number[] };
+    week: { labels: string[]; values: number[] };
+    month: { labels: string[]; values: number[] };
+    all: { labels: string[]; values: number[] };
+  };
+}
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
-
-const mockData = {
-  success: true,
-  code: 200,
-  message: "카테고리별 통계 조회 성공",
-  data: {
-    today: {
-      labels: ["커피", "디저트", "샌드위치", "음료", "기타"],
-      values: [35000, 12000, 8000, 15000, 4000],
-    },
-    week: {
-      labels: ["커피", "디저트", "샌드위치", "음료", "기타"],
-      values: [210000, 95000, 45000, 120000, 30000],
-    },
-    month: {
-      labels: ["커피", "디저트", "샌드위치", "음료", "기타"],
-      values: [880000, 420000, 220000, 500000, 120000],
-    },
-    all: {
-      labels: ["커피", "디저트", "샌드위치", "음료", "기타"],
-      values: [3250000, 1580000, 760000, 1890000, 500000],
-    },
-  },
-};
 
 const palette = [
   "#FF6384",
@@ -48,22 +39,46 @@ const palette = [
 ];
 
 const CategoryChart = () => {
-  const periodMap: Record<string, keyof typeof mockData.data> = {
+  const { choosedShop } = useShopStore();
+  const [viewType, setViewType] = useState<"amount" | "count">("amount");
+  const [viewPeriod, setViewPeriod] = useState("오늘");
+  const { data, isLoading, isError } = useQuery<CategoryResponse>({
+    queryKey: ["dashboard_category", choosedShop?.storeId, viewType],
+    queryFn: () => dashboardAPI.getCategory(choosedShop!.storeId, viewType),
+    enabled: !!choosedShop,
+  });
+
+  console.log(data);
+  console.log(data);
+  console.log(data);
+  console.log(data);
+  console.log(data);
+  const periodMap: Record<string, keyof CategoryResponse["data"]> = {
     오늘: "today",
     이번주: "week",
     이번달: "month",
     전체: "all",
   };
 
-  const [viewType, setViewType] = useState("amount");
-  const [viewPeriod, setViewPeriod] = useState("오늘");
+  if (isLoading) {
+    return <div className="h-100 bg-gray-100 animate-pulse rounded-xl" />;
+  }
+  if (isError || !data) {
+    return (
+      <div className="flex items-center justify-center h-80">
+        <span className="text-red-500 font-semibold">
+          카테고리별 매출 조회에서 오류가 발생했습니다!
+        </span>
+      </div>
+    );
+  }
 
-  const { labels, values } = mockData.data[periodMap[viewPeriod]];
+  const { labels, values } = data.data[periodMap[viewPeriod]];
   const handlePeriodChange = (event: SelectChangeEvent) => {
     setViewPeriod(event.target.value);
   };
   const handleViewChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setViewType((event.target as HTMLInputElement).value);
+    setViewType(event.target.value as "amount" | "count");
   };
   const chartData = {
     labels,
