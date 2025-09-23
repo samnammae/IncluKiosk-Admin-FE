@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
   const dayData = makeEmptyArr();
   const weekData = makeEmptyArr();
   const monthData = makeEmptyArr();
-
+  const allData = makeEmptyArr();
   const now = new Date();
   const today = now.toISOString().slice(0, 10); // YYYY-MM-DD
   const weekAgo = new Date(now);
@@ -68,6 +68,8 @@ export async function GET(req: NextRequest) {
     if (d >= monthAgo) {
       monthData[hour] += o.totalAmount; // 최근 30일 합
     }
+
+    allData[hour] += o.totalAmount;
   });
 
   // 주간, 월간은 평균으로 환산
@@ -82,8 +84,9 @@ export async function GET(req: NextRequest) {
       ),
       datasets: {
         day: dayData,
-        week: weekData.map((v) => Math.round(v / 7)),
-        month: monthData.map((v) => Math.round(v / 30)),
+        week: weekData,
+        month: monthData,
+        all: allData,
       },
     },
   };
