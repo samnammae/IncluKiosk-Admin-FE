@@ -17,6 +17,9 @@ export async function GET(req: NextRequest) {
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
 
+  const toKST = (date: Date) => {
+    return new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  };
   if (!storeId) {
     return NextResponse.json(
       { success: false, message: "storeId is required" },
@@ -50,10 +53,6 @@ export async function GET(req: NextRequest) {
       return d >= start && d <= end;
     });
   }
-
-  const toKST = (date: Date) => {
-    return new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  };
 
   // 그룹핑 키 생성 함수
   const groupKey = (date: Date) => {
