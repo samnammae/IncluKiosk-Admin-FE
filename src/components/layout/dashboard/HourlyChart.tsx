@@ -88,6 +88,7 @@ const HourlyChart = () => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -113,8 +114,9 @@ const HourlyChart = () => {
           handleChange={handlePeriodChange}
         />
       </div>
-
-      <Bar data={chartData} options={options} />
+      <div className="px-3 mt-6 h-80 max-h-96">
+        <Bar data={chartData} options={options} />
+      </div>
     </div>
   );
 };

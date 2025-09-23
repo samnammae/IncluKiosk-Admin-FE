@@ -91,6 +91,7 @@ const CategoryChart = () => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -160,12 +161,14 @@ const CategoryChart = () => {
       </div>
 
       {/* 차트 */}
-      <Doughnut
-        key={`${viewType}-${viewPeriod}`}
-        data={chartData}
-        options={options}
-        plugins={[centerTextPlugin]}
-      />
+      <div className="px-3 mt-6 h-80 max-h-96">
+        <Doughnut
+          key={`${viewType}-${viewPeriod}`}
+          data={chartData}
+          options={options}
+          plugins={[centerTextPlugin]}
+        />
+      </div>
     </>
   );
 };

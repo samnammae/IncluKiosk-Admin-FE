@@ -16,12 +16,12 @@ const DashboardContainer = () => {
         <SectionTitle title={"🧾 기간별 매출"} />
         <PeriodChart />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-white shadow-sm rounded-xl p-6 lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="bg-white shadow-sm rounded-xl p-6 lg:col-span-3">
           <SectionTitle title={"🕐 시간대별 매출"} />
           <HourlyChart />
         </div>
-        <div className="bg-white shadow-sm rounded-xl p-6 lg:col-span-1">
+        <div className="bg-white shadow-sm rounded-xl p-6 lg:col-span-2">
           <SectionTitle title={"📚 카테고리별 매출"} />
           <CategoryChart />
         </div>
