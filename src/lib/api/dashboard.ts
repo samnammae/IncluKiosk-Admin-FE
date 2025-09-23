@@ -26,13 +26,9 @@ export const dashboardAPI = {
     return response.data;
   },
 
-  getHourly: async (
-    storeId: number,
-    date?: string,
-    type: "amount" | "count" = "amount"
-  ) => {
+  getHourly: async (storeId: number) => {
     const response = await nextApi.get(`/dashboard/hourly`, {
-      params: { storeId, date, type },
+      params: { storeId },
     });
     console.log("시간대별 조회", response);
     return response.data;
