@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 
   const springData = await springRes.json();
   const orders: Order[] = springData.data;
-
+  console.log(springData);
   // 24시간 배열 준비
   const makeEmptyArr = () => Array.from({ length: 24 }, () => 0);
 
@@ -49,24 +49,26 @@ export async function GET(req: NextRequest) {
   const monthData = makeEmptyArr();
   const allData = makeEmptyArr();
   const now = new Date();
-  const today = now.toISOString().slice(0, 10); // YYYY-MM-DD
+  const today = new Date().toLocaleDateString("sv-SE");
   const weekAgo = new Date(now);
   weekAgo.setDate(now.getDate() - 7);
   const monthAgo = new Date(now);
   monthAgo.setMonth(now.getMonth() - 1);
 
   orders.forEach((o) => {
-    const d = new Date(o.createdAt);
+    const d = new Date(o.createdAt + "Z"); // Z 붙여서 UTC 기준으로 파싱
     const hour = d.getHours();
 
-    if (d.toISOString().slice(0, 10) === today) {
+    const orderDate = d.toLocaleDateString("sv-SE"); // "2025-09-23"
+    if (orderDate === today) {
       dayData[hour] += o.totalAmount; // 오늘
     }
+
     if (d >= weekAgo) {
-      weekData[hour] += o.totalAmount; // 최근 7일 합
+      weekData[hour] += o.totalAmount;
     }
     if (d >= monthAgo) {
-      monthData[hour] += o.totalAmount; // 최근 30일 합
+      monthData[hour] += o.totalAmount;
     }
 
     allData[hour] += o.totalAmount;
