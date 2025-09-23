@@ -51,15 +51,26 @@ export async function GET(req: NextRequest) {
   const springData = await springRes.json();
   const orders: Order[] = springData.data;
 
-  // 최신순 정렬 (Spring에서 이미 최신순일 수도 있지만 안전하게 정렬)
+  // 최신순 정렬, 한국 시간대로 정렬
   const sortedOrders = [...orders].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) =>
+      new Date(b.createdAt + "Z").getTime() -
+      new Date(a.createdAt + "Z").getTime()
   );
 
   const total = sortedOrders.length;
   const startIndex = (page - 1) * size;
   const endIndex = startIndex + size;
-  const pagedOrders = sortedOrders.slice(startIndex, endIndex);
+  //한국 시간대로 정렬
+  const pagedOrders = sortedOrders.slice(startIndex, endIndex).map((o) => ({
+    ...o,
+    createdAt: new Date(o.createdAt + "Z").toLocaleString("sv-SE", {
+      timeZone: "Asia/Seoul",
+    }),
+    updatedAt: new Date(o.updatedAt + "Z").toLocaleString("sv-SE", {
+      timeZone: "Asia/Seoul",
+    }),
+  }));
 
   const result = {
     success: true,

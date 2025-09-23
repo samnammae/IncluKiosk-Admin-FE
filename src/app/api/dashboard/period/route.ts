@@ -41,33 +41,38 @@ export async function GET(req: NextRequest) {
   const springData = await springRes.json();
   let orders: Order[] = springData.data;
 
-  // 기간 필터링 (startDate & endDate 있을 때만)
+  // 기간 필터링
   if (startDate && endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const start = new Date(startDate + "T00:00:00+09:00"); // 한국시간 0시
+    const end = new Date(endDate + "T23:59:59+09:00"); // 한국시간 23:59
     orders = orders.filter((o) => {
-      const d = new Date(o.createdAt);
+      const d = toKST(new Date(o.createdAt + "Z"));
       return d >= start && d <= end;
     });
   }
 
+  const toKST = (date: Date) => {
+    return new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  };
+
   // 그룹핑 키 생성 함수
   const groupKey = (date: Date) => {
+    const kstDate = toKST(date);
+
     if (unit === "daily") {
-      return date.toISOString().slice(0, 10); // YYYY-MM-DD
+      return kstDate.toISOString().slice(0, 10); // YYYY-MM-DD
     }
     if (unit === "weekly") {
-      const firstDayOfWeek = new Date(date);
-      firstDayOfWeek.setDate(date.getDate() - date.getDay()); // 주 시작(일요일)
+      const firstDayOfWeek = new Date(kstDate);
+      firstDayOfWeek.setDate(kstDate.getDate() - kstDate.getDay()); // 주 시작(일요일)
       return firstDayOfWeek.toISOString().slice(0, 10);
     }
     if (unit === "monthly") {
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}`; // YYYY-MM
+      return `${kstDate.getFullYear()}-${String(
+        kstDate.getMonth() + 1
+      ).padStart(2, "0")}`;
     }
-    return date.toISOString().slice(0, 10);
+    return kstDate.toISOString().slice(0, 10);
   };
 
   // 그룹핑
@@ -77,7 +82,7 @@ export async function GET(req: NextRequest) {
   > = {};
 
   orders.forEach((o) => {
-    const d = new Date(o.createdAt);
+    const d = toKST(new Date(o.createdAt + "Z"));
     const key = groupKey(d);
 
     if (!grouped[key]) {

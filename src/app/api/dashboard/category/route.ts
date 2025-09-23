@@ -79,12 +79,16 @@ export async function GET(req: NextRequest) {
   const categories: string[] = categoryData.data.categories;
   const menusByCategory: Record<string, any[]> =
     categoryData.data.menusByCategory;
+  const toKST = (date: Date) =>
+    new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
 
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay()); // 이번주 일요일
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const now = toKST(new Date());
+  const todayStr = now.toISOString().slice(0, 10); // YYYY-MM-DD (한국 기준)
+
+  const startOfWeek = toKST(new Date());
+  startOfWeek.setDate(now.getDate() - now.getDay());
+
+  const startOfMonth = toKST(new Date(now.getFullYear(), now.getMonth(), 1));
 
   // 📊 카테고리별 그룹핑 함수
   const groupByCategory = (orders: Order[]) => {
