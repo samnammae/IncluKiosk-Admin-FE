@@ -1,7 +1,13 @@
 "use client";
 
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  elements,
+} from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useState } from "react";
 import ListButton from "@/components/ui/button/ListButton";
@@ -44,13 +50,24 @@ const palette = [
 const CategoryChart = () => {
   const { choosedShop } = useShopStore();
   const [viewType, setViewType] = useState<"amount" | "items">("amount");
-  const [viewPeriod, setViewPeriod] = useState("오늘");
+  const [viewPeriod, setViewPeriod] = useState("이번주");
+
+  //이벤트 핸들러
+  const handlePeriodChange = (event: SelectChangeEvent) => {
+    setViewPeriod(event.target.value);
+  };
+  const handleViewChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setViewType(event.target.value as "amount" | "items");
+  };
+
+  //데이터 fetch
   const { data, isLoading, isError } = useQuery<CategoryResponse>({
     queryKey: ["dashboard_category", choosedShop?.storeId, viewType],
     queryFn: () => dashboardAPI.getCategory(choosedShop!.storeId, viewType),
     enabled: !!choosedShop,
   });
 
+  //필터 매핑
   const periodMap: Record<string, keyof CategoryResponse["data"]> = {
     오늘: "today",
     이번주: "week",
@@ -58,6 +75,7 @@ const CategoryChart = () => {
     전체: "all",
   };
 
+  //데이터 로딩 및 에러처리
   if (isLoading) {
     return <div className="h-100 bg-gray-100 animate-pulse rounded-xl" />;
   }
@@ -70,14 +88,19 @@ const CategoryChart = () => {
       </div>
     );
   }
+  //데이터가 없는 경우
+  const allzero = data.data.all.values.every((ele) => ele === 0);
+  if (allzero) {
+    return (
+      <div className="flex items-center justify-center h-80">
+        <span className="text-gray-500">최근 주문 내역이 없습니다</span>
+      </div>
+    );
+  }
 
+  //차트 설정
   const { labels, values } = data.data[periodMap[viewPeriod]];
-  const handlePeriodChange = (event: SelectChangeEvent) => {
-    setViewPeriod(event.target.value);
-  };
-  const handleViewChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setViewType(event.target.value as "amount" | "items");
-  };
+
   const chartData = {
     labels,
     datasets: [

@@ -23,12 +23,23 @@ const SidebarShopList = () => {
 
   useEffect(() => {
     if (data?.success && data.data) {
+      const lastShopId = localStorage.getItem("lastShop");
+
+      if (lastShopId) {
+        //마지막 매장 정보를 불러오기
+        const savedShop = data.data.find(
+          (s: ShopType) => String(s.storeId) === lastShopId
+        );
+        if (savedShop) setChooseShop(savedShop);
+        else setChooseShop(data.data[0]); // 없으면 첫 번째 매장 선택
+      } else setChooseShop(data.data[0]); // 저장된 게 없으면 첫 번째 매장 선택
+
       setShops(data.data, data.data.length);
-      setChooseShop(data.data[0]); //첫번째 매장 기본 선택
     }
-  }, [data, setShops]);
+  }, [data, setShops, setChooseShop]);
 
   const handleShopSelect = (shop: ShopType) => {
+    localStorage.setItem("lastShop", String(shop.storeId));
     setChooseShop(shop);
     setIsOpen(false);
   };

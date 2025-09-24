@@ -84,9 +84,9 @@ const PeriodChart = () => {
 
   //데이터 조회
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["dashboard", "period", choosedShop?.storeId, options], // 캐싱 키
+    queryKey: ["dashboard", "period", choosedShop?.storeId, options],
     queryFn: () => dashboardAPI.getPeriod(choosedShop!.storeId, options),
-    enabled: !!choosedShop, // storeId 없으면 실행 안 함
+    enabled: !!choosedShop,
   });
 
   //데이터 로딩 or 에러처리
@@ -99,6 +99,15 @@ const PeriodChart = () => {
         <span className="text-red-500 font-semibold">
           기간별 매출 조회에서 오류가 발생했습니다!
         </span>
+      </div>
+    );
+  }
+
+  //데이터가 없는 경우
+  if (data?.data?.labels.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-80">
+        <span className="text-gray-500">최근 주문 내역이 없습니다</span>
       </div>
     );
   }
