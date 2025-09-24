@@ -101,14 +101,15 @@ const formatAmount = (amount: number) => {
 
 const RecentMinitable = () => {
   const { choosedShop } = useShopStore();
+
+  //데이터 fetch
   const { data, isLoading, isError } = useQuery({
     queryKey: ["recent", choosedShop],
     queryFn: () => dashboardAPI.getRecent(choosedShop!.storeId, 1, 5),
     enabled: !!choosedShop,
   });
 
-  console.log("최근데이터", data);
-
+  //데이터 로딩 및 에러처리
   if (isLoading) {
     return <div className="h-72 bg-gray-100 animate-pulse rounded-xl" />;
   }
@@ -121,12 +122,14 @@ const RecentMinitable = () => {
       </div>
     );
   }
+
+  //데이터가 없는 경우
   const orders = data?.data?.orders;
 
   if (!orders || orders.length === 0) {
     return (
       <div className="flex items-center justify-center h-80">
-        <span className="text-gray-500">최근 주문 내역이 없습니다.</span>
+        <span className="text-gray-500">최근 주문 내역이 없습니다</span>
       </div>
     );
   }
