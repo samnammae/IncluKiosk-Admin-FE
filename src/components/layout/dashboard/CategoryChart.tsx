@@ -50,7 +50,7 @@ const palette = [
 const CategoryChart = () => {
   const { choosedShop } = useShopStore();
   const [viewType, setViewType] = useState<"amount" | "items">("amount");
-  const [viewPeriod, setViewPeriod] = useState("오늘");
+  const [viewPeriod, setViewPeriod] = useState("이번주");
 
   //이벤트 핸들러
   const handlePeriodChange = (event: SelectChangeEvent) => {

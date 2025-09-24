@@ -40,7 +40,7 @@ ChartJS.register(
 
 const HourlyChart = () => {
   const { choosedShop } = useShopStore();
-  const [viewPeriod, setViewPeriod] = useState("오늘");
+  const [viewPeriod, setViewPeriod] = useState("이번주");
 
   //핸들러
   const handlePeriodChange = (event: SelectChangeEvent) => {
