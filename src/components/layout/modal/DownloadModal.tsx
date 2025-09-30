@@ -1,8 +1,8 @@
 import ClosedIcon from "@/components/ui/icon/ClosedIcon";
 import Image from "next/image";
 import React from "react";
-import macOsImg from "@/assets/images/macOs.png";
-import rasberrypiOs from "@/assets/images/rasberrypiOs.png";
+import macOsImg from "@/assets/images/macOs.webp";
+import rasberrypiOs from "@/assets/images/rasberrypiOs.webp";
 import { useQuery } from "@tanstack/react-query";
 import { downloadAPI } from "@/lib/api/download";
 
