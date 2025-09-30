@@ -8,7 +8,7 @@ import LoginModal from "./modal/LoginModal";
 import { useNotification } from "@/hooks/useNotification";
 import DownloadModal from "./modal/DownloadModal";
 import DownloadIcon from "@mui/icons-material/DownloadRounded";
-
+import HeaderNavButton from "../ui/button/HeaderNavButton";
 export default function Header() {
   const showNotification = useNotification((state) => state.showNotification);
   const { isLoggedIn, setIsLoggedIn, openLoginModal } = useLoginModalStore();
@@ -39,33 +39,28 @@ export default function Header() {
     <>
       <LoginModal />
       <DownloadModal isOpen={isDownOpen} handleClose={handleClose} />
-      <header className="w-full h-16 flex justify-between items-center px-4">
-        <div className="">IncluKiosk</div>
-        <div className="flex gap-12">
-          <button
-            className="flex gap-1 items-center"
+      <header className="w-full h-20 flex justify-between items-center px-8 bg-white/95 backdrop-blur-md border-b border-gray-200 fixed top-0 z-40">
+        <Link href={"/"}>
+          <div className="text-2xl font-bold text-gray-900">IncluKiosk</div>
+        </Link>
+        <div className="flex gap-8 items-center">
+          <HeaderNavButton
+            text="다운로드"
             onClick={() => setIsDownOpen(true)}
-          >
-            <span>다운로드</span> <DownloadIcon sx={{ fontSize: 20 }} />
-          </button>
+          />
+
           {isLoggedIn ? (
             <Link href={"/dashboard"}>
-              <div className="">대시보드</div>
+              <HeaderNavButton text="대시보드" />
             </Link>
           ) : (
-            <button className="" onClick={handleLoginClick}>
-              대시보드
-            </button>
+            <HeaderNavButton text="대시보드" onClick={handleLoginClick} />
           )}
 
           {isLoggedIn ? (
-            <button className="" onClick={handleLogoutClick}>
-              로그아웃
-            </button>
+            <HeaderNavButton text="로그아웃" onClick={handleLogoutClick} />
           ) : (
-            <button className="" onClick={handleLoginClick}>
-              로그인
-            </button>
+            <HeaderNavButton text="로그인" onClick={handleLoginClick} />
           )}
         </div>
       </header>
