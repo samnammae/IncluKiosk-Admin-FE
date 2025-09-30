@@ -3,13 +3,19 @@
 import Link from "next/link";
 import { useLoginModalStore } from "@/lib/store/loginStore";
 import { authAPI } from "@/lib/api/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LoginModal from "./modal/LoginModal";
 import { useNotification } from "@/hooks/useNotification";
+import DownloadModal from "./modal/DownloadModal";
+import DownloadIcon from "@mui/icons-material/DownloadRounded";
 
 export default function Header() {
   const showNotification = useNotification((state) => state.showNotification);
   const { isLoggedIn, setIsLoggedIn, openLoginModal } = useLoginModalStore();
+  const [isDownOpen, setIsDownOpen] = useState(false);
+  const handleClose = () => {
+    setIsDownOpen(false);
+  };
   const handleLoginClick = () => {
     openLoginModal();
   };
@@ -28,13 +34,20 @@ export default function Header() {
     else setIsLoggedIn(false);
     console.log("isLoggedInisLoggedInisLoggedIn", isLoggedIn);
   }, []);
+
   return (
     <>
       <LoginModal />
-
+      <DownloadModal isOpen={isDownOpen} handleClose={handleClose} />
       <header className="w-full h-16 flex justify-between items-center px-4">
         <div className="">IncluKiosk</div>
-        <div className="flex gap-8">
+        <div className="flex gap-12">
+          <button
+            className="flex gap-1 items-center"
+            onClick={() => setIsDownOpen(true)}
+          >
+            <span>다운로드</span> <DownloadIcon sx={{ fontSize: 20 }} />
+          </button>
           {isLoggedIn ? (
             <Link href={"/dashboard"}>
               <div className="">대시보드</div>
