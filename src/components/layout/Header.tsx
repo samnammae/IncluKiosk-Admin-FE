@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import LoginModal from "./modal/LoginModal";
 import { useNotification } from "@/hooks/useNotification";
 import DownloadModal from "./modal/DownloadModal";
-import DownloadIcon from "@mui/icons-material/Download";
+import DownloadIcon from "@mui/icons-material/DownloadRounded";
 
 export default function Header() {
   const showNotification = useNotification((state) => state.showNotification);
@@ -34,6 +34,7 @@ export default function Header() {
     else setIsLoggedIn(false);
     console.log("isLoggedInisLoggedInisLoggedIn", isLoggedIn);
   }, []);
+
   return (
     <>
       <LoginModal />
@@ -42,10 +43,10 @@ export default function Header() {
         <div className="">IncluKiosk</div>
         <div className="flex gap-12">
           <button
-            className="flex gap-2 items-center"
+            className="flex gap-1 items-center"
             onClick={() => setIsDownOpen(true)}
           >
-            <span>다운로드</span> <DownloadIcon sx={{ fontSize: 16 }} />
+            <span>다운로드</span> <DownloadIcon sx={{ fontSize: 20 }} />
           </button>
           {isLoggedIn ? (
             <Link href={"/dashboard"}>
