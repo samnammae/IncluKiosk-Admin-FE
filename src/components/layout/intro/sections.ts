@@ -8,7 +8,8 @@ import K6 from "@/assets/mockups/6.webp";
 import K7 from "@/assets/mockups/7.webp";
 import K8 from "@/assets/mockups/8.webp";
 import K9 from "@/assets/mockups/9.webp";
-
+import KioskBottom from "@/assets/mockups/kioskBottom.webp";
+import KioskTop from "@/assets/mockups/kioskTop.webp";
 export interface SectionType {
   id: number;
   title: string;
@@ -41,7 +42,7 @@ export const sections: SectionType[] = [
         "어린이, 휠체어 사용자, 일반 성인 모두 동일한 경험을 누릴 수 있습니다.",
       ],
     ],
-    images: [K2], // 임의 이미지
+    images: [KioskTop, KioskBottom],
     isKiosk: true,
   },
   {

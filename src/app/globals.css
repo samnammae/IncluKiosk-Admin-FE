@@ -65,3 +65,19 @@
     @apply bg-card text-card-foreground rounded-lg border shadow-sm;
   }
 }
+
+@keyframes kioskMove {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-60px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-kioskMove {
+  animation: kioskMove 6s ease-in-out infinite;
+}

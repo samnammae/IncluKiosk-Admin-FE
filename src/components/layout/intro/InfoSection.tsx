@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { SectionType } from "./sections";
 import SlideMockup from "./SlideMockup";
+import MoveKioskMockUp from "./MoveKioskMockUp";
 
 interface InfoSectionProps {
   sec: SectionType;
@@ -29,21 +30,27 @@ const InfoSection = ({ activeSection, sec, index }: InfoSectionProps) => {
         <div>
           <h2 className="text-4xl font-bold mb-8">{sec.title}</h2>
           <div>
-            {sec.description[infoIndex].map((item) => (
-              <p className="text-lg text-gray-500"> {item} </p>
+            {sec.description[infoIndex].map((item, idx) => (
+              <p key={idx} className="text-lg text-gray-500">
+                {item}
+              </p>
             ))}
           </div>
         </div>
 
         {/* 오른쪽 이미지 슬라이드 */}
         <div className="flex justify-center">
-          <SlideMockup
-            isKiosk={sec.isKiosk}
-            images={sec.images}
-            infoIndex={infoIndex}
-            prev={prev}
-            next={next}
-          />
+          {index !== 1 ? (
+            <SlideMockup
+              isKiosk={sec.isKiosk}
+              images={sec.images}
+              infoIndex={infoIndex}
+              prev={prev}
+              next={next}
+            />
+          ) : (
+            <MoveKioskMockUp images={sec.images} />
+          )}
         </div>
       </div>
     </section>
