@@ -27,11 +27,11 @@ const InfoSection = ({ activeSection, sec, index }: InfoSectionProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full max-w-6xl">
         {/* 왼쪽 텍스트 */}
         <div>
-          <h2 className="text-4xl font-bold mb-6">{sec.title}</h2>
-          <div className="space-y-3">
-            <p className="text-lg text-gray-600">
-              {sec.description[infoIndex]}
-            </p>
+          <h2 className="text-4xl font-bold mb-8">{sec.title}</h2>
+          <div>
+            {sec.description[infoIndex].map((item) => (
+              <p className="text-lg text-gray-500"> {item} </p>
+            ))}
           </div>
         </div>
 
