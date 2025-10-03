@@ -1,29 +1,3 @@
-// "use client";
-
-// import React from "react";
-// import Image, { StaticImageData } from "next/image";
-
-// interface MoveKioskMockUpProps {
-//   images: StaticImageData[];
-//   infoIndex: number;
-// }
-
-// const MoveKioskMockUp = ({ images, infoIndex }: MoveKioskMockUpProps) => {
-//   return (
-//     <div className="relative w-full max-w-md">
-//       {/* 이미지 */}
-//       <Image
-//         src={images[infoIndex]}
-//         alt={`mockup-${infoIndex}`}
-//         width={400}
-//         height={100}
-//         className=" object-contain mx-auto"
-//       />
-//     </div>
-//   );
-// };
-
-// export default MoveKioskMockUp;
 "use client";
 
 import React from "react";
