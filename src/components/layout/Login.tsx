@@ -48,7 +48,7 @@ const Login = () => {
         <div className="mb-6">
           <label
             htmlFor="email"
-            className="block text-gray-700 text-sm font-medium mb-2"
+            className="block text-gray-700 text-sm font-medium mb-2 mt-2"
           >
             이메일
           </label>
@@ -102,13 +102,14 @@ const Login = () => {
         </button>
       </div>
 
-      <div className="flex items-center text-center my-6">
+      {/* 소셜 로그인 기능 미완성 */}
+      {/* <div className="flex items-center text-center my-6">
         <div className="flex-1 border-b border-gray-200"></div>
         <span className="px-4 text-gray-500 text-xs">Or continue with</span>
         <div className="flex-1 border-b border-gray-200"></div>
-      </div>
+      </div> 
 
-      <div className="flex flex-col gap-3">
+       <div className="flex flex-col gap-3">
         <button className="relative w-full p-3 bg-[#fee500] text-[#191600] border-none rounded-md text-sm font-medium cursor-pointer transition-all duration-200 flex items-center justify-center gap-3 active:scale-[1.02]">
           <div className="w-6 h-6 absolute left-4 bg-yellow-600 rounded flex items-center justify-center text-white font-bold text-xs">
             K
@@ -122,7 +123,7 @@ const Login = () => {
           </div>
           구글로 시작하기
         </button>
-      </div>
+      </div> */}
 
       <div className="text-center mt-6 text-gray-600 text-xs">
         계정이 필요하신가요?
