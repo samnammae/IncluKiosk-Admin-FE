@@ -81,3 +81,7 @@
 .animate-kioskMove {
   animation: kioskMove 6s ease-in-out infinite;
 }
+
+.bg-circle {
+  @apply absolute rounded-full bg-[rgba(255,255,255,0.08)];
+}

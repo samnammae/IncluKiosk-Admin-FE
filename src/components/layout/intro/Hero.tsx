@@ -10,18 +10,23 @@ const Hero = () => {
   const router = useRouter();
   return (
     <section
-      className="min-h-screen flex flex-col items-center justify-center text-center relative z-10"
+      className="min-h-screen flex flex-col items-center justify-center text-center relative z-10  overflow-hidden"
       style={{
         background:
           "linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%)",
       }}
     >
+      {/* 배경 원 아티클 */}
+      <div className="bg-circle w-[600px] h-[600px] -top-[300px] -right-[200px]"></div>
+      <div className="bg-circle w-[400px] h-[400px] -bottom-[150px] -left-[100px]"></div>
+      <div className="bg-circle w-[250px] h-[250px] top-1/2 left-[10%] opacity-50"></div>
+
       {/* 로고 */}
       <Image
         src={IncluKiosk}
         alt="IncluKiosk Logo"
         priority
-        className="max-h-[40vh] max-w-[40vw] object-contain scale-150"
+        className="max-h-[40vh] max-w-[40vw] object-contain scale-150 pointer-events-none"
       />
 
       {/* 핵심 메시지 */}
