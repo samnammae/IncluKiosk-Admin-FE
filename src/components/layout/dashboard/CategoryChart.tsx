@@ -126,6 +126,7 @@ const CategoryChart = () => {
           size: 12,
         },
         formatter: (value: number, context: Context) => {
+          if (value === 0) return null;
           const labels = context.chart.data.labels as string[];
           return labels[context.dataIndex];
         },
