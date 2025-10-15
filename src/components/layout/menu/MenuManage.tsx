@@ -91,24 +91,28 @@ const MenuManage = () => {
     // 현재 메뉴 찾기
     const currentMenu = filteredMenus.find((menu) => menu.id === id);
     if (!currentMenu) return;
-    const categoryId = findCategoryId(id);
 
+    const categoryId = findCategoryId(id);
     const newSoldOutStatus = !currentMenu.isSoldOut;
+
     console.log("품절처리 핸들 함수 과정", currentMenu);
+    console.log("품절처리 핸들 함수 과정- 옵션", currentMenu.optionCategoryIds);
     console.log("품절처리 핸들 함수 과정 카테고리 id", categoryId);
 
     const formData = new FormData();
 
-    // JSON 데이터 (기존 정보 + 변경된 soldOut 상태)
+    // 기존 정보 + 변경된 soldOut 상태
     const requestData = {
       name: currentMenu.name,
       price: currentMenu.price,
       description: currentMenu.description,
       categoryId: categoryId || "",
-      optionCategories: currentMenu.optionCategoryIds || [],
+      optionCategoryIds: JSON.stringify(currentMenu.optionCategoryIds || []),
       isSoldOut: newSoldOutStatus, // 토글된 상태
     };
+
     console.log("품절처리", requestData);
+
     formData.append(
       "request",
       new Blob([JSON.stringify(requestData)], {
