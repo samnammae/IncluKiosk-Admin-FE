@@ -545,7 +545,11 @@ export default function ShopForm({
             </AcceptButton>
             <CancelButton onClick={() => router.back()}>취소</CancelButton>
           </div>
-          <DeleteButton onClick={onDeleteClick}>매장 삭제하기</DeleteButton>
+          {isEditMode ? (
+            <DeleteButton onClick={onDeleteClick}>매장 삭제하기</DeleteButton>
+          ) : (
+            <></>
+          )}
         </div>
       </FormContainer>
     </div>
