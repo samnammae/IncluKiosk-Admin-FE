@@ -95,9 +95,9 @@ const MenuManage = () => {
     const categoryId = findCategoryId(id);
     const newSoldOutStatus = !currentMenu.isSoldOut;
 
-    console.log("품절처리 핸들 함수 과정", currentMenu);
-    console.log("품절처리 핸들 함수 과정- 옵션", currentMenu.optionCategoryIds);
-    console.log("품절처리 핸들 함수 과정 카테고리 id", categoryId);
+    // console.log("품절처리 핸들 함수 과정", currentMenu);
+    // console.log("품절처리 핸들 함수 과정- 옵션", currentMenu.optionCategoryIds);
+    // console.log("품절처리 핸들 함수 과정 카테고리 id", categoryId);
 
     const formData = new FormData();
 
