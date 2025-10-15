@@ -103,7 +103,7 @@ const CategoryContainer = () => {
   };
 
   return (
-    <div className="">
+    <div>
       <div className="flex flex-wrap gap-3">
         {categories.map((category, index) => (
           <div
