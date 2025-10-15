@@ -37,7 +37,18 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
   const [isDragOver, setIsDragOver] = useState(false);
 
   const { choosedShop } = useShopStore();
-  const { categories, optionCategories: optionData } = useMenuStore();
+  const { categories, menus, optionCategories: optionData } = useMenuStore();
+
+  //메뉴 수정을 위한 카테고리id 찾기 함수
+  const findCategoryId = (menuId: string) => {
+    const includCategoryName = Object.entries(menus).find(([category, items]) =>
+      items.some((item) => item.id === menuId)
+    );
+    const targetCategoriesId = categories.find(
+      (ele) => ele.name === includCategoryName?.[0]
+    );
+    return targetCategoriesId?.id || null;
+  };
 
   // 수정 모드일 때 기존 데이터로 폼 초기화
   useEffect(() => {
@@ -46,7 +57,7 @@ const MenuFormModal: React.FC<MenuFormModalProps> = ({
         name: editMenu.name,
         price: editMenu.price.toString(),
         description: editMenu.description,
-        category: editMenu.categoryId || "",
+        category: editMenu.categoryId || findCategoryId(editMenu.id) || "",
         optionCategories: editMenu.optionCategoryIds || [], // 기존 이름 배열 그대로 사용
         isSoldOut: editMenu.isSoldOut,
       });
