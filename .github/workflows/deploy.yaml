@@ -37,10 +37,10 @@ jobs:
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/IncluKiosk-Admin-FE
+            cd /home/ec2-user/IncluKiosk-Admin-FE
             git pull origin main
 
             # 환경변수 파일 생성
