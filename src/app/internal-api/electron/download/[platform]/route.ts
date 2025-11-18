@@ -33,7 +33,7 @@ export async function GET(
     // S3에서 latest.yml 파일 읽기
     const ymlKey = `releases/latest-${platform}.yml`;
     const command = new GetObjectCommand({
-      Bucket: "inclukiosk-fe",
+      Bucket: "inclukiosk-kiosk-fe",
       Key: ymlKey,
     });
 
@@ -48,7 +48,7 @@ export async function GET(
     const data = yaml.load(ymlContent) as LatestYml;
 
     // 다운로드 URL 생성
-    const downloadUrl = `https://inclukiosk-fe.s3.ap-northeast-2.amazonaws.com/releases/${data.path}`;
+    const downloadUrl = `https://inclukiosk-kiosk-fe.s3.ap-northeast-2.amazonaws.com/releases/${data.path}`;
 
     return NextResponse.json({
       platform,
